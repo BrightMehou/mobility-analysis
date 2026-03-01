@@ -9,15 +9,14 @@ Fonctions réutilisables pour :
 
 import logging
 import os
-from datetime import datetime
+from datetime import date
 
 import psycopg2
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 
-
 logger = logging.getLogger(__name__)
 
-today_date: str = datetime.now().strftime("%Y-%m-%d")
+today_date = date.today()
 
 DB_NAME: str = os.getenv("DB_NAME", "postgres")
 DB_USER: str = os.getenv("DB_USER", "postgres")

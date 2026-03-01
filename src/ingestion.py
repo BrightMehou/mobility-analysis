@@ -8,7 +8,6 @@ Fonctionnalités principales :
 """
 
 import logging
-from datetime import datetime
 from enum import StrEnum
 
 import requests
@@ -16,7 +15,6 @@ import requests
 from utils import store_json
 
 logger = logging.getLogger(__name__)
-today_date: str = datetime.now().strftime("%Y-%m-%d")
 
 
 class CityUrl(StrEnum):
@@ -35,37 +33,46 @@ def get_realtime_bicycle_data() -> None:
     Si une ville échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
     """
     for url in CityUrl:
+        file_name = f"{url.name.lower()}_realtime_bicycle_data.json"
+        data_to_store = "[]"
         try:
-            response = requests.get(url, timeout=20)
-            url_name = url.name.lower()
-            if response.status_code == 200 and response.text.strip():
-                store_json(f"{url_name}_realtime_bicycle_data.json", response.text)
-                logger.info(f"✅ Données {url.name} stockées avec succès")
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            if response.text.strip():
+                data_to_store = response.text
+                logger.info(f"✅ Données {url.name} récupérées avec succès")        
             else:
-                logger.warning(
-                    f"⚠️ {url.name} indisponible (status: {response.status_code})"
-                )
-                store_json(f"{url_name}_realtime_bicycle_data.json", "[]")
+                logger.warning(f"⚠️ {url.name} a renvoyé un contenu vide")
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Erreur réseau ou HTTP pour {url.name}: {e}")
         except Exception as e:
-            logger.error(f"❌ Erreur pour {url.name}: {e}. Création fichier vide.")
-            store_json(f"{url_name}_realtime_bicycle_data.json", "[]")
+            logger.error(f"❌ Erreur imprévue pour {url.name}: {e}")
+        finally:
+            store_json(file_name, data_to_store)
+            if data_to_store == "[]":
+                logger.warning(f"ℹ️ Fichier vide créé pour {url.name}")
 
 
 def get_commune_data() -> None:
     """Récupère les données des communes françaises et les stocke dans PostgreSQL."""
+    data_to_store = "[]"
     try:
         response = requests.get(URL_COMMUNES, timeout=30)
-        if response.status_code == 200 and response.text.strip():
-            store_json("commune_data.json", response.text)
-            logger.info("✅ Données communes stockées avec succès")
+        response.raise_for_status()
+
+        if response.text.strip():
+            data_to_store = response.text
+            logger.info("✅ Données communes récupérées avec succès")
         else:
-            logger.warning(
-                f"⚠️ API communes indisponible (status: {response.status_code})"
-            )
-            store_json("commune_data.json", "[]")
+            logger.warning("⚠️ API communes indisponible (contenu vide)")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"❌ Erreur réseau ou HTTP pour {URL_COMMUNES}: {e}")
     except Exception as e:
-        logger.error(f"❌ Erreur récupération communes : {e}")
-        store_json("commune_data.json", "[]")
+        logger.error(f"❌ Erreur imprévue pour {URL_COMMUNES}: {e}")
+    finally:
+        store_json("commune_data.json", data_to_store)
+        if data_to_store == "[]":
+            logger.warning(f"⚠️ Fichier vide créé pour {URL_COMMUNES}")
 
 
 def data_ingestion() -> None:

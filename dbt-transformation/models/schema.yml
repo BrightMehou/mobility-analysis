@@ -8,144 +8,197 @@ models:
     description: "Table de staging unifiant les relevés de disponibilité des stations des différentes villes."
   - name: stg_station
     description: "Table de staging unifiant les informations des stations des différentes villes."
+
+
   - name: consolidate_station
     description: "Table des stations de vélos avec leurs informations générales."
+    config:
+      contract: {enforced: true}
+    constraints:
+      - type: primary_key
+        columns: [id, created_date]
     columns:
       - name: id
         description: "Identifiant unique de la station."
-        tests:
-          - not_null
+        data_type: text
+        constraints:
+          - type: not_null
       - name: code
-        description: "Code de la station."
-        tests:
-          - not_null
+        description: "Code de la station."     
+        data_type: text
+        constraints:
+          - type: not_null
       - name: name
         description: "Nom de la station."
+        data_type: text
       - name: city_name
         description: "Nom de la ville associée à la station."
+        data_type: text
       - name: city_code
         description: "Code de la ville."
+        data_type: text
       - name: address
         description: "Adresse postale de la station."
+        data_type: text
       - name: longitude
         description: "Longitude géographique de la station."
+        data_type: float
       - name: latitude
         description: "Latitude géographique de la station."
+        data_type: float
       - name: status
         description: "Statut de la station (ouverte/fermée/etc)."
+        data_type: text
       - name: created_date
         description: "Date de création de l'enregistrement."
-        tests:
-          - not_null
+        data_type: date
+        constraints:
+          - type: not_null
       - name: capacity
         description: "Capacité en nombre de vélos."
-    tests:
-      - unique:
-          column_name: "(id || '-' || created_date)"
-
+        data_type: integer
   - name: consolidate_city
     description: "Table des villes avec le nombre d’habitants."
+    config:
+      contract: {enforced: true}
+    constraints:
+      - type: primary_key
+        columns: [id, created_date]
     columns:
       - name: id
         description: "Identifiant unique de la ville."
-        tests:
-          - not_null
+        data_type: text
+        constraints:
+          - type: not_null
       - name: name
         description: "Nom de la ville."
+        data_type: text
       - name: nb_inhabitants
         description: "Nombre d’habitants."
+        data_type: integer
       - name: created_date
         description: "Date de création de l’enregistrement."
-        tests:
-          - not_null
-    tests:
-      - unique:
-          column_name: "(id || '-' || created_date)"
-
+        data_type: date
+        constraints:
+          - type: not_null
   - name: consolidate_station_statement
     description: "Table des relevés quotidiens de disponibilité des stations."
+    config:
+      contract: {enforced: true}
+    constraints:
+      - type: primary_key
+        columns: [station_id, created_date]
     columns:
       - name: station_id
         description: "Référence à l'identifiant de la station."
-        tests:
-          - not_null
+        data_type: text
+        constraints:
+          - type: not_null
       - name: bicycle_docks_available
         description: "Nombre de places libres pour garer un vélo."
+        data_type: integer
       - name: bicycle_available
         description: "Nombre de vélos disponibles."
+        data_type: integer
       - name: last_statement_date
         description: "Horodatage du dernier relevé."
+        data_type: timestamp
       - name: created_date
         description: "Date de création de l’enregistrement."
-        tests:
-          - not_null
+        data_type: date
+        constraints:
+          - type: not_null
+
 
   - name: dim_station
     description: "Dimension des stations de vélos, contenant les informations statiques."
+    config:
+      contract: {enforced: true}
     columns:
       - name: id
         description: "Identifiant unique de la station."
-        tests:
-          - not_null
-          - unique
+        data_type: text
+        constraints:
+          - type: primary_key
       - name: code
         description: "Code de la station."
+        data_type: text
       - name: name
         description: "Nom de la station."
+        data_type: text
       - name: address
         description: "Adresse de la station."
+        data_type: text
       - name: longitude
         description: "Longitude géographique."
+        data_type: float
       - name: latitude
         description: "Latitude géographique."
+        data_type: float
       - name: status
         description: "Statut de la station (ouverte/fermée/etc)."
+        data_type: text
       - name: capacity
         description: "Capacité maximale de vélos."
-
+        data_type: integer
   - name: dim_city
     description: "Dimension des villes, contenant le nombre d’habitants."
+    config:
+      contract: {enforced: true}
     columns:
       - name: id
         description: "Identifiant unique de la ville."
-        tests:
-          - not_null
-          - unique
+        data_type: text
+        constraints:
+          - type: primary_key
       - name: name
         description: "Nom de la ville."
+        data_type: text
       - name: nb_inhabitants
         description: "Nombre d’habitants de la ville."
-
+        data_type: integer
   - name: fact_station_statement
     description: "Table de faits contenant les relevés de disponibilité des stations par date et ville."
+    config:
+      contract: {enforced: true}
+    constraints:
+      - type: primary_key
+        columns: [station_id, city_id, created_date]
     columns:
       - name: station_id
         description: "Identifiant de la station (FK vers dim_station)."
-        tests:
-          - not_null
+        data_type: text
+        constraints:
+          - type: not_null
       - name: city_id
         description: "Identifiant de la ville (FK vers dim_city)."
-        tests:
-          - not_null
+        data_type: text
+        constraints:
+          - type: not_null
       - name: bicycle_docks_available
         description: "Nombre de places libres pour vélos."
+        data_type: integer
       - name: bicycle_available
         description: "Nombre de vélos disponibles."
+        data_type: integer
       - name: last_statement_date
         description: "Horodatage du dernier relevé."
+        data_type: timestamp
       - name: created_date
         description: "Date de création de l’enregistrement (par défaut aujourd'hui)."
-        tests:
-          - not_null
-    tests:
-      - unique:
-          column_name: "(station_id || '-' || city_id || '-' || created_date)"
+        data_type: date
+        constraints:
+          - type: not_null
+
+    # PRIMARY KEY (station_id, city_id, created_date),
+    # FOREIGN KEY (station_id) REFERENCES dim_station(id),
+    # FOREIGN KEY (city_id) REFERENCES dim_city(id)
 
   - name: available_emplacement_by_city
     description: "Vue montrant le nombre total de places libres par ville"
   - name: map_station
     description: "Vue cartographique du statut des stations de vélos."
-  - name: mean_bicycle_available_by_station_city
+  - name: mean_bicycle_available_by_station
     description: "Vue affichant le nombre moyen de vélos disponibles par station."
   - name: total_capacity_by_city
     description: "Vue affichant la capacité totale de vélos par ville."

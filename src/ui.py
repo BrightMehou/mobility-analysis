@@ -20,7 +20,9 @@ from ingestion import data_ingestion
 from utils import data_transformation
 
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", force=True
+    level=logging.INFO, 
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", 
+    force=True
 )
 
 logger = logging.getLogger(__name__)
