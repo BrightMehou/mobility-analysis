@@ -1,4 +1,4 @@
-## 🚴 ETL-Velo
+## 🚴 MOBILITY-ANALYSIS
 
 Ce projet propose la mise en place d’un pipeline pour collecter, transformer et analyser les données des systèmes de vélos en libre-service de Paris, Nantes, Toulouse et Strasbourg.
 Les données sont stockées dans Postgres, transformées à l’aide de DBT (Data Build Tool) pour assurer la qualité, la modularité et la traçabilité des modèles de données. Enfin, elles sont présentées via Streamlit pour faciliter l’exploration et la visualisation des résultats.
@@ -18,7 +18,7 @@ Les données sont stockées dans Postgres, transformées à l’aide de DBT (Dat
 ## 🗂️ **Structure du Projet**
 
 ```plaintext
-├── dbt-transformation/            # Projet DBT pour la transformation des données
+├── dbt-transformation/        # Projet DBT pour la transformation des données
 ├── src/                       # Code source principal
 │   ├── sql_statements/        # Requêtes SQL réutilisables
 │   ├── ingestion.py           # Ingestion des données en temps réel

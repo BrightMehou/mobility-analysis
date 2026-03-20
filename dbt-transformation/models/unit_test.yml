@@ -1,0 +1,16 @@
+unit_tests:
+  - name: test_extract_json_commune
+    description: "Vérifie l'extraction JSON des communes depuis le champ DATA."
+    model: stg_city
+    given:
+      - input: source('postgres', 'staging_raw')
+        rows:
+          - { 
+                NOM: 'commune_data.json', 
+                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
+                DATA: '[{"population": "100", "code": "code1", "nom": "nom1"}, {"population": "200", "code": "code2", "nom": "nom2"}]' 
+            }
+    expect:
+      rows:
+        - { NB_INHABITANTS: 100, ID: "code1", NAME: "nom1", CREATED_DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}" }
+        - { NB_INHABITANTS: 200, ID: "code2", NAME: "nom2", CREATED_DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}" }
