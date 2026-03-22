@@ -47,7 +47,7 @@ def fetch_and_store_data(url: str, file_name: str, label: str) -> None:
 
 def data_ingestion() -> None:
     """
-    Récupère les données en temps réel des stations de vélo pour les villes et les données des communes françaises.
+    Récupère les données en temps réel des stations de vélo et des communes françaises.
     Si une source échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
     """
     for url in Url:

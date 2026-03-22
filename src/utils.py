@@ -20,17 +20,15 @@ today_date = date.today()
 
 DB_NAME: str = os.getenv("DB_NAME", "postgres")
 DB_USER: str = os.getenv("DB_USER", "postgres")
-DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres") 
+DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
 DB_HOST: str = os.getenv("DB_HOST", "localhost")
 DB_PORT: str = os.getenv("DB_PORT", "5432")
 
 conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT
-    )
+    dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
+)
+
+
 def exec_sql_from_file(
     file_name: str,
     log_message: str,
@@ -51,7 +49,7 @@ def exec_sql_from_file(
             cursor.execute(query)
             conn.commit()
             logger.info(log_message)
-  
+
 
 def store_json(name: str, raw_json: str) -> None:
     """
@@ -70,7 +68,8 @@ def store_json(name: str, raw_json: str) -> None:
         cursor.execute(insert_query, (name, today_date, raw_json))
         conn.commit()
         logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
-      
+
+
 def data_transformation() -> bool:
     """
     Exécute la commande `dbt run`.
@@ -79,13 +78,12 @@ def data_transformation() -> bool:
     logger.info("🚀 Démarrage de la commande dbt run")
 
     dbt = dbtRunner()
-    cli_args =  [
-                    "run",
-                    "--project-dir",
-                    "dbt-transformation",
-                    "--profiles-dir",
-                    "dbt-transformation",
-                ]
+    cli_args = [
+        "run",
+        "--project-dir",
+        "dbt-transformation",
+        "--profiles-dir",
+        "dbt-transformation",
+    ]
     res: dbtRunnerResult = dbt.invoke(cli_args)
     return res.success
-

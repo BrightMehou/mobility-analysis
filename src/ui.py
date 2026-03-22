@@ -6,6 +6,7 @@ Fonctionnalités principales :
 - Carte interactive des stations avec Plotly.
 - Indicateurs clés par ville et par station.
 """
+
 import logging
 import os
 from collections.abc import Callable
@@ -20,9 +21,9 @@ from ingestion import data_ingestion
 from utils import data_transformation
 
 logging.basicConfig(
-    level=logging.INFO, 
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", 
-    force=True
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    force=True,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,15 +32,17 @@ logger.info("Démarrage de l'application Streamlit.")
 st.set_page_config(page_title="Tableau de bord mobilité", page_icon="🚲", layout="wide")
 st.logo("🚲")
 
+
 @st.cache_resource
 def get_sql_engine() -> create_engine:
     DB_NAME: str = os.getenv("DB_NAME", "postgres")
     DB_USER: str = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres") 
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_PORT: str = os.getenv("DB_PORT", "5432")
     DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     return create_engine(DB_URL)
+
 
 engine = get_sql_engine()
 if "loaded" not in st.session_state:
@@ -73,9 +76,7 @@ if st.button("🔄 Alimenter et afficher"):
 
 
 if st.session_state.loaded:
-    
     with engine.connect() as con:
-
         st.subheader("🗺️ Carte interactive des stations")
         query_map: str = """
         select * from map_station;
@@ -83,7 +84,7 @@ if st.session_state.loaded:
         df_map: pd.DataFrame = pd.read_sql_query(text(query_map), con)
         if df_map.empty:
             st.warning("Aucune donnée pour la carte.")
-            logger.warning("DataFrame pour la carte est vide.") 
+            logger.warning("DataFrame pour la carte est vide.")
         else:
             fig: Figure = px.scatter_map(
                 df_map,
@@ -124,7 +125,7 @@ if st.session_state.loaded:
             ),
             ("3. Capacité totale par ville", "select * from total_capacity_by_city;"),
         ]
-        
+
         for title, query in queries:
             st.markdown(f"**{title}**")
             df = pd.read_sql_query(text(query), con)
