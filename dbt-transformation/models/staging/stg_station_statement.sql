@@ -9,7 +9,7 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(data) AS json
 WHERE
-    nom = 'paris_realtime_bicycle_data.json'
+    nom = 'paris.json'
     AND date = current_date
 UNION
 ALL -- Nantes
@@ -23,7 +23,7 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(data) AS json
 WHERE
-    nom = 'nantes_realtime_bicycle_data.json'
+    nom = 'nantes.json'
     AND date = current_date
 UNION
 ALL -- Toulouse
@@ -37,7 +37,7 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(data) AS json
 WHERE
-    nom = 'toulouse_realtime_bicycle_data.json'
+    nom = 'toulouse.json'
     AND date = current_date
 UNION
 ALL -- Strasbourg
@@ -51,5 +51,5 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(data) AS json
 WHERE
-    nom = 'strasbourg_realtime_bicycle_data.json'
+    nom = 'strasbourg.json'
     AND date = current_date

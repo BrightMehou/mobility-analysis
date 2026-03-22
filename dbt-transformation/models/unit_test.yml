@@ -6,7 +6,7 @@ unit_tests:
       - input: source('postgres', 'staging_raw')
         rows:
           - { 
-                NOM: 'commune_data.json', 
+                NOM: 'communes.json', 
                 DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[{"population": "100", "code": "code1", "nom": "nom1"}, {"population": "200", "code": "code2", "nom": "nom2"}]' 
             }
@@ -21,22 +21,22 @@ unit_tests:
       - input: source('postgres', 'staging_raw')
         rows:
           - { 
-                NOM: 'paris_realtime_bicycle_data.json', 
+                NOM: 'paris.json', 
                 DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[{"stationcode": "paris", "numdocksavailable": "10", "numbikesavailable": "1", "duedate" : "2026-03-21 11:00:06.000"}]' 
             }
           - { 
-                NOM: 'nantes_realtime_bicycle_data.json', 
+                NOM: 'nantes.json', 
                 DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[]' 
             }            
           - { 
-                NOM: 'toulouse_realtime_bicycle_data.json', 
+                NOM: 'toulouse.json', 
                 DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[]' 
             }     
           - { 
-                NOM: 'strasbourg_realtime_bicycle_data.json', 
+                NOM: 'strasbourg.json', 
                 DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[]' 
             }     

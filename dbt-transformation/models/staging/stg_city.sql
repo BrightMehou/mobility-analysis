@@ -7,5 +7,5 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(DATA) AS ROW
 WHERE
-    NOM = 'commune_data.json'
+    NOM = 'communes.json'
     AND DATE = current_date
