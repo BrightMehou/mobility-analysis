@@ -1,5 +1,5 @@
 unit_tests:
-  - name: test_extract_json_commune
+  - name: test_stg_city
     description: "Vérifie l'extraction JSON des communes depuis le champ DATA."
     model: stg_city
     given:
@@ -14,3 +14,35 @@ unit_tests:
       rows:
         - { NB_INHABITANTS: 100, ID: "code1", NAME: "nom1", CREATED_DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}" }
         - { NB_INHABITANTS: 200, ID: "code2", NAME: "nom2", CREATED_DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}" }
+  - name: test_station_statement
+    description: "Vérifie l'extraction JSON des 'station_statement' depuis le champ DATA."
+    model: stg_station_statement
+    given:
+      - input: source('postgres', 'staging_raw')
+        rows:
+          - { 
+                NOM: 'paris_realtime_bicycle_data.json', 
+                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
+                DATA: '[{"stationcode": "paris", "numdocksavailable": "10", "numbikesavailable": "1", "duedate" : "2026-03-21 11:00:06.000"}]' 
+            }
+          - { 
+                NOM: 'nantes_realtime_bicycle_data.json', 
+                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
+                DATA: '[]' 
+            }            
+          - { 
+                NOM: 'toulouse_realtime_bicycle_data.json', 
+                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
+                DATA: '[]' 
+            }     
+          - { 
+                NOM: 'strasbourg_realtime_bicycle_data.json', 
+                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
+                DATA: '[]' 
+            }     
+    expect:
+      rows:
+        - {
+            ID: "1-paris", BICYCLE_DOCKS_AVAILABLE: 10, BICYCLE_AVAILABLE: 1, LAST_STATEMENT_DATE: "2026-03-21 11:00:06.000",
+            CREATED_DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}" 
+          }

@@ -1,4 +1,4 @@
-{{ config(unique_key = 'station_id',) }} WITH temp AS (
+{{ config(unique_key = ['station_id','city_id','created_date']) }} WITH temp AS (
     SELECT
         station_id,
         bicycle_docks_available,
@@ -24,5 +24,6 @@ SELECT
     temp.created_date
 FROM
     temp
-    INNER JOIN {{ ref('consolidate_station') }} AS station ON temp.station_id = station.id
+    INNER JOIN {{ ref('consolidate_station') }} AS station ON temp.station_id = station.id 
     LEFT JOIN {{ ref('dim_city') }} AS city ON station.city_code = city.id
+where station.created_date = (SELECT max(created_date)  FROM {{ ref('consolidate_station') }} )
