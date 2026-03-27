@@ -34,7 +34,7 @@ st.logo("🚲")
 
 
 @st.cache_resource
-def get_sql_engine() -> create_engine:
+def get_sql_engine():
     DB_NAME: str = os.getenv("DB_NAME", "postgres")
     DB_USER: str = os.getenv("DB_USER", "postgres")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
