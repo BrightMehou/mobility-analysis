@@ -1,10 +1,7 @@
-"""
-Module d'utilitaires pour DuckDB et MinIO.
-
-Fonctions réutilisables pour :
+"""Fonctions réutilisables pour :
 - Exécution de fichiers SQL sur PostgreSQL
 - Envoi de fichiers JSON vers PostgreSQL
-- Exécute les transformations ELT via `dbt run` dans le projet `src/transformation`.
+- Exécute les transformations ELT via `dbt run`.
 """
 
 import logging
