@@ -18,9 +18,12 @@ WHERE
     nom = 'paris.json'
     AND date = current_date
 UNION
-ALL -- Nantes
+ALL -- Nantes and Toulouse
 SELECT
-    '{{ var("NANTES_CITY_CODE", "2") }}' || '-' || (json ->> 'number') AS id,
+    CASE
+        WHEN nom = 'nantes.json' THEN '{{ var("NANTES_CITY_CODE", "2") }}'
+        WHEN nom = 'toulouse.json' THEN '{{ var("TOULOUSE_CITY_CODE", "3") }}'
+    END || '-' || (json ->> 'number') AS id,
     json ->> 'number' AS code,
     json ->> 'name' AS name,
     json ->> 'contract_name' AS city_name,
@@ -35,27 +38,7 @@ FROM
     {{ source('postgres', 'staging_raw') }},
     jsonb_array_elements(data) AS json
 WHERE
-    nom = 'nantes.json'
-    AND date = current_date
-UNION
-ALL -- Toulouse
-SELECT
-    '{{ var("TOULOUSE_CITY_CODE", "3") }}' || '-' || (json ->> 'number') AS id,
-    json ->> 'number' AS code,
-    json ->> 'name' AS name,
-    json ->> 'contract_name' AS city_name,
-    NULL AS city_code,
-    json ->> 'address' AS address,
-    (json -> 'position' ->> 'lon') :: DOUBLE PRECISION AS longitude,
-    (json -> 'position' ->> 'lat') :: DOUBLE PRECISION AS latitude,
-    json ->> 'status' AS STATUS,
-    current_date AS created_date,
-    (json ->> 'bike_stands') :: INTEGER AS capacity
-FROM
-    {{ source('postgres', 'staging_raw') }},
-    jsonb_array_elements(data) AS json
-WHERE
-    nom = 'toulouse.json'
+    nom IN ('nantes.json', 'toulouse.json')
     AND date = current_date
 UNION
 ALL -- Strasbourg
