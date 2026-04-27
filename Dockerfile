@@ -17,11 +17,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY pyproject.toml uv.lock ./
 COPY dbt-transformation/ /app/dbt-transformation/
 COPY src/ /app/src/
-COPY init_app.sh /init_app.sh
+COPY init_app.sh /app/init_app.sh
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
 
 EXPOSE 8501 8080
 
-ENTRYPOINT ["/bin/bash", "/init_app.sh"]
+ENTRYPOINT ["/bin/bash", "/app/init_app.sh"]
