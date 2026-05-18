@@ -2,8 +2,23 @@ version: 2
 
 sources:
   - name: postgres
+    description: "Base PostgreSQL alimentée par l'ingestion Python (fichiers JSON journaliers)."
     database: postgres
     schema: public
     tables:
       - name: staging_raw
-        description: "Table de staging des données brutes extraites"
+        description: >
+          Table brute journalière : une ligne par fichier source (ville ou communes)
+          et par date d'ingestion. Clé primaire PostgreSQL (nom, date).
+          Le payload JSON est stocké dans la colonne data.
+        columns:
+          - name: nom
+            description: >
+              Nom du fichier source (ex. paris.json, nantes.json, communes.json).
+              Fait partie de la clé primaire avec date.
+          - name: date
+            description: "Date d'ingestion des données brutes."
+          - name: data
+            description: >
+              Contenu JSON brut (tableau d'objets) tel que renvoyé par les API
+              ou l'API géographique des communes.

@@ -94,6 +94,11 @@ models:
         data_type: text
         constraints:
           - type: not_null
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('consolidate_station')
+                field: id
       - name: bicycle_docks_available
         description: "Nombre de places libres pour garer un vélo."
         data_type: integer
@@ -108,7 +113,6 @@ models:
         data_type: date
         constraints:
           - type: not_null
-
 
   - name: dim_station
     description: "Dimension des stations de vélos, contenant les informations statiques."
@@ -170,11 +174,21 @@ models:
         data_type: text
         constraints:
           - type: not_null
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: id
       - name: city_id
         description: "Identifiant de la ville (FK vers dim_city)."
         data_type: text
         constraints:
           - type: not_null
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_city')
+                field: id
       - name: bicycle_docks_available
         description: "Nombre de places libres pour vélos."
         data_type: integer
@@ -194,11 +208,66 @@ models:
     # FOREIGN KEY (station_id) REFERENCES dim_station(id),
     # FOREIGN KEY (city_id) REFERENCES dim_city(id)
 
-  - name: available_emplacement_by_city
-    description: "Vue montrant le nombre total de places libres par ville"
   - name: map_station
-    description: "Vue cartographique du statut des stations de vélos."
+    description: >
+      Stations géolocalisées avec leur dernier relevé de disponibilité.
+      Exposée au dashboard Streamlit (carte).
+    columns:
+      - name: id
+        description: "Identifiant station (dim_station)."
+      - name: code
+        description: "Code station."
+      - name: name
+        description: "Nom affiché de la station."
+      - name: address
+        description: "Adresse postale."
+      - name: latitude
+        description: "Latitude (stations sans coordonnées exclues)."
+      - name: longitude
+        description: "Longitude (stations sans coordonnées exclues)."
+      - name: status
+        description: "Statut de la station."
+      - name: capacity
+        description: "Capacité en emplacements."
+      - name: bicycle_docks_available
+        description: "Places libres au dernier relevé."
+      - name: bicycle_available
+        description: "Vélos disponibles au dernier relevé."
+      - name: last_statement_date
+        description: "Horodatage du dernier relevé."
+
+  - name: available_emplacement_by_city
+    description: >
+      Somme des places libres (bicycle_docks_available) par ville cible
+      (Paris, Nantes, Toulouse, Strasbourg).
+    columns:
+      - name: name
+        description: "Nom de la ville (dim_city)."
+        data_tests:
+          - not_null
+          - unique
+      - name: sum_bicycle_docks_available
+        description: "Total des emplacements libres pour la ville."
+
   - name: mean_bicycle_available_by_station
-    description: "Vue affichant le nombre moyen de vélos disponibles par station."
+    description: "Moyenne historique des vélos disponibles par station."
+    columns:
+      - name: name
+        description: "Nom de la station."
+      - name: code
+        description: "Code station."
+      - name: address
+        description: "Adresse de la station."
+      - name: avg_dock_available
+        description: "Moyenne de bicycle_available sur fact_station_statement."
+
   - name: total_capacity_by_city
-    description: "Vue affichant la capacité totale de vélos par ville."
+    description: "Capacité totale des stations par ville."
+    columns:
+      - name: city_name
+        description: "Nom de la ville."
+        data_tests:
+          - not_null
+          - unique
+      - name: total_capacity
+        description: "Somme des capacity des stations de la ville."
