@@ -1,6 +1,6 @@
 [project]
 name = "mobility-analysis"
-version = "0.7.0"
+version = "0.8.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -11,7 +11,7 @@ dependencies = [
     "plotly>=6.3.0",
     "requests>=2.32.5",
     "sqlalchemy>=2.0.46",
-    "streamlit>=1.55.0",
+    "streamlit>=1.57.0",
 ]
 
 [dependency-groups]

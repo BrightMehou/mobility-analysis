@@ -1,5 +1,5 @@
 """Fonctions réutilisables pour :
-- Exécution de fichiers SQL sur PostgreSQL
+- Exécution de requêtes SQL sur PostgreSQL
 - Envoi de fichiers JSON vers PostgreSQL
 - Exécute les transformations ELT via `dbt run`.
 """
@@ -26,26 +26,19 @@ conn = psycopg2.connect(
 )
 
 
-def exec_sql_from_file(
-    file_name: str,
-    log_message: str,
-) -> None:
+def exec_sql(query: str, log_message: str) -> None:
     """
-    Exécute les instructions SQL d'un fichier sur une base de données PostgreSQL.
+    Exécute une requête SQL passée directement en chaîne de caractères.
 
     Args:
-        file_name (str): Le nom du fichier SQL situé dans `src/sql_statements`.
+        query (str): La requête SQL à exécuter.
         log_message (str): Message à afficher dans les logs après l'exécution.
     """
-    sql_path: str = f"src/sql_statements/{file_name}"
 
-    with open(sql_path) as fd:
-        query: str = fd.read()
-
-        with conn.cursor() as cursor:
-            cursor.execute(query)
-            conn.commit()
-            logger.info(log_message)
+    with conn.cursor() as cursor:
+        cursor.execute(query)
+        conn.commit()
+        logger.info(log_message)
 
 
 def store_json(name: str, raw_json: str) -> None:

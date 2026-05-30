@@ -20,7 +20,6 @@ Les données sont stockées dans Postgres, transformées à l’aide de DBT (Dat
 ```plaintext
 ├── dbt-transformation/        # Projet DBT pour la transformation des données
 ├── src/                       # Code source principal
-│   ├── sql_statements/        # Requêtes SQL réutilisables
 │   ├── ingestion.py           # Ingestion des données en temps réel
 │   ├── init_db.py             # Fichier d'initialisation de la base de données
 │   ├── ui.py                  # Interface utilisateur
