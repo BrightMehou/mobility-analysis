@@ -238,8 +238,7 @@ models:
 
   - name: available_emplacement_by_city
     description: >
-      Somme des places libres (bicycle_docks_available) par ville cible
-      (Paris, Nantes, Toulouse, Strasbourg).
+      Somme des places libres (bicycle_docks_available) par ville
     columns:
       - name: name
         description: "Nom de la ville (dim_city)."

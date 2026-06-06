@@ -1,3 +1,7 @@
+WITH latest_data AS (
+    SELECT MAX(created_date) AS max_date
+    FROM {{ ref('fact_station_statement') }}
+)
 SELECT
     ds.id,
     ds.code,
@@ -16,3 +20,4 @@ FROM
 WHERE
     ds.latitude IS NOT NULL
     AND ds.longitude IS NOT NULL
+    AND fss.created_date = (SELECT max_date FROM latest_data)
