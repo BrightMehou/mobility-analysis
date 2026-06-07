@@ -5,7 +5,8 @@ WITH latest_data AS (
 city_aggregation AS (
     SELECT
         city_id,
-        SUM(bicycle_docks_available) AS sum_bicycle_docks_available
+        SUM(bicycle_docks_available) AS bicycle_docks_available,
+        SUM(bicycle_available) AS bicycle_available
     FROM
         {{ ref('fact_station_statement') }}
     WHERE
@@ -15,7 +16,8 @@ city_aggregation AS (
 )
 SELECT
     dm.name,
-    ca.sum_bicycle_docks_available
+    ca.bicycle_docks_available,
+    ca.bicycle_available
 FROM
     {{ ref('dim_city') }} AS dm
     INNER JOIN city_aggregation AS ca ON dm.id = ca.city_id
