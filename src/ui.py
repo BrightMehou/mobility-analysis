@@ -119,11 +119,7 @@ if st.session_state.loaded:
                 "1. Emplacements dispo par ville",
                 "select * from available_emplacement_by_city;",
             ),
-            (
-                "2. Moyenne vélos dispo par station",
-                "select * from mean_bicycle_available_by_station;",
-            ),
-            ("3. Capacité totale par ville", "select * from total_capacity_by_city;"),
+            ("2. Capacité totale par ville", "select * from total_capacity_by_city;"),
         ]
 
         for title, query in queries:

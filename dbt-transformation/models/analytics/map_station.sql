@@ -1,23 +1,17 @@
-WITH latest_data AS (
-    SELECT MAX(created_date) AS max_date
-    FROM {{ ref('fact_station_statement') }}
-)
 SELECT
-    ds.id,
-    ds.code,
-    ds.name,
-    ds.address,
-    ds.latitude,
-    ds.longitude,
-    ds.status,
-    ds.capacity,
-    fss.bicycle_docks_available,
-    fss.bicycle_available,
-    fss.last_statement_date
+    id,
+    code,
+    name,
+    address,
+    latitude,
+    longitude,
+    status,
+    capacity,
+    bicycle_docks_available,
+    bicycle_available,
+    last_statement_date
 FROM
-    {{ ref('dim_station') }} AS ds
-    INNER JOIN {{ ref('fact_station_statement') }} AS fss ON ds.id = fss.station_id
+    {{ ref('station') }}
 WHERE
-    ds.latitude IS NOT NULL
-    AND ds.longitude IS NOT NULL
-    AND fss.created_date = (SELECT max_date FROM latest_data)
+    latitude IS NOT NULL
+    AND longitude IS NOT NULL

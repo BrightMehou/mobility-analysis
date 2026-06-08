@@ -12,7 +12,6 @@ exposures:
     depends_on:
       - ref('map_station')
       - ref('available_emplacement_by_city')
-      - ref('mean_bicycle_available_by_station')
       - ref('total_capacity_by_city')
     owner:
       name: "Equipe Data"

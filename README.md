@@ -72,11 +72,6 @@ La transformation des données est orchestrée via **DBT**, selon une architectu
 **Objectif** : Synthétiser les données consolidées pour produire des modèles analytiques et des vues prêtes à l’exploration.
 
 #### Étapes :  
-La modélisation suit une logique en étoile et se décompose en deux niveaux :
-
-- 📁 **Star_model**  
-  - Création des **tables dimensionnelles** (ex. : `dim_city`, `dim_station`) et de la **table factuelle** (`fact_station_statement`) en associant les données consolidées.  
-  - Ces modèles facilitent les jointures et les analyses multi-axes.
 
 - 📁 **Analytics**  
   - Génération de **vues analytiques** prêtes à être exposées dans **Streamlit**.  

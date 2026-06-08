@@ -1,4 +1,4 @@
-{{ config(unique_key = ['id', 'created_date'],) }}
+{{ config(unique_key = ['id'],) }}
 SELECT
   id,
   NAME,

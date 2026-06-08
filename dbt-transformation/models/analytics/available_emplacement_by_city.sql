@@ -1,23 +1,17 @@
-WITH latest_data AS (
-    SELECT MAX(created_date) AS max_date
-    FROM {{ ref('fact_station_statement') }}
-),
-city_aggregation AS (
+WITH city_aggregation AS (
     SELECT
-        city_id,
+        city_code,
         SUM(bicycle_docks_available) AS bicycle_docks_available,
         SUM(bicycle_available) AS bicycle_available
     FROM
-        {{ ref('fact_station_statement') }}
-    WHERE
-        created_date = (SELECT max_date FROM latest_data)
+        {{ ref('station') }}
     GROUP BY
-        city_id
+        city_code
 )
 SELECT
-    dm.name,
+    c.name,
     ca.bicycle_docks_available,
     ca.bicycle_available
 FROM
-    {{ ref('dim_city') }} AS dm
-    INNER JOIN city_aggregation AS ca ON dm.id = ca.city_id
+    {{ ref('city') }} AS c
+    INNER JOIN city_aggregation AS ca ON c.id = ca.city_code

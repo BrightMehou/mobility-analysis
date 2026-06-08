@@ -43,11 +43,6 @@ models:
     staging:
       +materialized: ephemeral
       +group: staging
-    star_model:
-      +materialized: incremental
-      +incremental_strategy: merge
-      +group: star_model
-      +on_schema_change: fail
 
 vars:
   PARIS_CITY_CODE : 1
