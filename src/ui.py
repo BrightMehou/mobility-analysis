@@ -8,17 +8,17 @@ Fonctionnalités principales :
 """
 
 import logging
-import os
 from collections.abc import Callable
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from ingestion import data_ingestion
-from utils import data_transformation
+from utils import data_transformation, get_db_engine
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,31 +27,14 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-logger.info("Démarrage de l'application Streamlit.")
 
 st.set_page_config(page_title="Tableau de bord mobilité", page_icon="🚲", layout="wide")
 st.logo("🚲")
 
 
-@st.cache_resource
-def get_sql_engine():
-    DB_NAME: str = os.getenv("DB_NAME", "postgres")
-    DB_USER: str = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
-    DB_HOST: str = os.getenv("DB_HOST", "localhost")
-    DB_PORT: str = os.getenv("DB_PORT", "5432")
-    DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    return create_engine(DB_URL)
-
-
-engine = get_sql_engine()
-if "loaded" not in st.session_state:
-    st.session_state.loaded = False
-
-
 st.title("📊 Tableau de bord des stations de vélos 🚲")
 
-if st.button("🔄 Alimenter et afficher"):
+if st.button("🔄 Actualiser"):
     try:
         with st.status("🚀 Lancement du pipeline...", expanded=True) as status:
             steps: list[tuple[str, Callable[[], None]]] = [
@@ -67,23 +50,76 @@ if st.button("🔄 Alimenter et afficher"):
 
             status.update(label="✅ Pipeline terminé avec succès !", state="complete")
             st.success("Données alimentées et prêtes à l’affichage !")
-            st.session_state.loaded = True
 
     except Exception as e:
         logger.exception("Erreur pipeline")
         st.error(f"❌ Échec du pipeline à l'étape '{label}' : {e}")
-        st.session_state.loaded = False
 
 
-if st.session_state.loaded:
-    with engine.connect() as con:
+def load_dataframe(con, query: str) -> pd.DataFrame:
+    try:
+        return pd.read_sql_query(text(query), con)
+    except (SQLAlchemyError, pd.errors.DatabaseError) as exc:
+        logger.warning("Erreur lors du chargement du DataFrame : %s", exc)
+        return pd.DataFrame()
+
+tab_global, tab_city, tab_station = st.tabs(
+    [
+        "🌐 Global",
+        "🏙️ City",
+        "🗺️ Station",
+    ]
+)
+
+engine = get_db_engine()
+with engine.connect() as con:
+    with tab_global:
+        st.subheader("🌐 Indicateurs globaux")
+        query_global_metrics = "select * from global_metrics;"
+        df_global_metrics = load_dataframe(con, query_global_metrics)
+
+        if df_global_metrics.empty:
+            st.warning("Aucune donnée globale disponible pour le moment.")
+        else:
+            display_cols = df_global_metrics.columns.tolist()
+            cols_layout = st.columns(len(display_cols))
+            first_row = df_global_metrics.iloc[0]
+            for col_name, col_place in zip(display_cols, cols_layout):
+                val = first_row[col_name]
+                col_place.metric(col_name.replace("_", " ").title(), f"{val}")
+
+        logger.info("Données globales chargées.")
+
+        st.markdown(f"**Statut global des stations**")
+        query_global_status = "select * from global_status;"
+        df_global_status = load_dataframe(con, query_global_status)
+        if df_global_status.empty:
+            st.info("Aucun statut global disponible.")
+        else:
+            st.dataframe(df_global_status, width="stretch")
+
+    with tab_city:
+        st.subheader("🏙️ Indicateurs par ville")
+        queries_city: list[tuple[str, str]] = [
+            ("Emplacements dispo par ville", "select * from available_emplacement_by_city;"),
+            ("Capacité totale par ville", "select * from total_capacity_by_city;"),
+        ]
+
+        for title, query in queries_city:
+            st.markdown(f"**{title}**")
+            df = load_dataframe(con, query)
+            if df.empty:
+                st.warning("Aucune donnée disponible pour cette vue.")
+            st.dataframe(df, width="stretch")
+            logger.info(f"Données pour '{title}' chargées.")
+
+    with tab_station:
         st.subheader("🗺️ Carte interactive des stations")
-        query_map: str = """
-        select * from map_station;
-        """
-        df_map: pd.DataFrame = pd.read_sql_query(text(query_map), con)
+        query_map: str = "select * from map_station;"
+        df_map: pd.DataFrame = load_dataframe(con, query_map)
+
         if df_map.empty:
-            st.warning("Aucune donnée pour la carte.")
+            st.warning("Aucune donnée disponible pour la carte.")
             logger.warning("DataFrame pour la carte est vide.")
         else:
             fig: Figure = px.scatter_map(
@@ -110,24 +146,5 @@ if st.session_state.loaded:
             )
             st.plotly_chart(fig, config={"width": "stretch", "height": 600})
             logger.info("Données pour la carte chargées.")
-        st.markdown("---")
 
-        st.subheader("📈 Indicateurs clés")
-
-        queries: list[tuple[str, str]] = [
-            (
-                "1. Emplacements dispo par ville",
-                "select * from available_emplacement_by_city;",
-            ),
-            ("2. Capacité totale par ville", "select * from total_capacity_by_city;"),
-        ]
-
-        for title, query in queries:
-            st.markdown(f"**{title}**")
-            df = pd.read_sql_query(text(query), con)
-            st.dataframe(df, width="stretch")
-            logger.info(f"Données pour '{title}' chargées.")
-
-    st.caption("Données issues des API publiques des stations de vélos.")
-else:
-    st.info("🔘 Cliquez sur **Alimenter et afficher** pour charger les données.")
+st.caption("Données issues des API publiques des stations de vélos.")

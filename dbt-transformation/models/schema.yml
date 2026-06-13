@@ -140,3 +140,23 @@ models:
           - unique
       - name: total_capacity
         description: "Somme des capacity des stations de la ville."
+
+  - name: global_status
+    description: "Décompte des stations selon leur statut."
+    columns:
+      - name: status
+        description: "Statut de la station (ouverte, fermée, etc.)."
+      - name: nb
+        description: "Nombre de stations pour ce statut."
+
+  - name: global_metrics
+    description: "Mesures globales des stations (nombre total, capacité, vélos disponibles, emplacements libres)."
+    columns:
+      - name: nb_station
+        description: "Nombre total de stations."
+      - name: capacity
+        description: "Capacité totale agrégée de toutes les stations."
+      - name: bicycle_docks_available
+        description: "Nombre total d'emplacements libres."
+      - name: bicycle_available
+        description: "Nombre total de vélos disponibles."

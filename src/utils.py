@@ -6,14 +6,12 @@
 
 import logging
 import os
-from datetime import date
 
-import psycopg2
+
+from sqlalchemy import create_engine, text
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 
 logger = logging.getLogger(__name__)
-
-today_date = date.today()
 
 DB_NAME: str = os.getenv("DB_NAME", "postgres")
 DB_USER: str = os.getenv("DB_USER", "postgres")
@@ -21,9 +19,10 @@ DB_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
 DB_HOST: str = os.getenv("DB_HOST", "localhost")
 DB_PORT: str = os.getenv("DB_PORT", "5432")
 
-conn = psycopg2.connect(
-    dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
-)
+
+def get_db_engine():
+    db_url = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    return create_engine(db_url, future=True)
 
 
 def exec_sql(query: str, log_message: str) -> None:
@@ -35,10 +34,10 @@ def exec_sql(query: str, log_message: str) -> None:
         log_message (str): Message à afficher dans les logs après l'exécution.
     """
 
-    with conn.cursor() as cursor:
-        cursor.execute(query)
-        conn.commit()
-        logger.info(log_message)
+    engine = get_db_engine()
+    with engine.begin() as connection:
+        connection.execute(text(query))
+    logger.info(log_message)
 
 
 def store_json(name: str, raw_json: str) -> None:
@@ -50,14 +49,17 @@ def store_json(name: str, raw_json: str) -> None:
         raw_json (str): Les données brutes en format JSON
     """
 
-    with conn.cursor() as cursor:
-        insert_query = """
-                       INSERT INTO staging_raw (nom, date, data) VALUES (%s, %s, %s) 
-                       ON CONFLICT (nom, date) DO UPDATE SET data = EXCLUDED.data
-                    """
-        cursor.execute(insert_query, (name, today_date, raw_json))
-        conn.commit()
-        logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
+    engine = get_db_engine()
+    query = text(
+        """
+        INSERT INTO staging_raw (nom, data)
+        VALUES (:name, :data)
+        ON CONFLICT (nom) DO UPDATE SET data = EXCLUDED.data
+        """
+    )
+    with engine.begin() as connection:
+        connection.execute(query, {"name": name, "data": raw_json})
+    logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
 
 
 def data_transformation() -> bool:
