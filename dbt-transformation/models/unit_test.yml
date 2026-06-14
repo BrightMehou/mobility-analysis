@@ -7,7 +7,6 @@ unit_tests:
         rows:
           - { 
                 NOM: 'communes.json', 
-                DATE: "{{ run_started_at.strftime('%Y-%m-%d') }}", 
                 DATA: '[{"population": "100", "code": "code1", "nom": "nom1"}, {"population": "200", "code": "code2", "nom": "nom2"}]' 
             }
     expect:

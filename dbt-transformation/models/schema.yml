@@ -49,6 +49,10 @@ models:
       - name: status
         description: "Statut de la station (ouverte/fermée/etc)."
         data_type: text
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['open', 'closed', 'unknown']
       - name: capacity
         description: "Capacité en nombre de vélos."
         data_type: integer

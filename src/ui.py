@@ -86,7 +86,7 @@ with engine.connect() as con:
             first_row = df_global_metrics.iloc[0]
             for col_name, col_place in zip(display_cols, cols_layout):
                 val = first_row[col_name]
-                col_place.metric(col_name.replace("_", " ").title(), f"{val}")
+                col_place.metric(col_name.replace("_", " ").title(), f"{val}", border=True)
 
         logger.info("Données globales chargées.")
 

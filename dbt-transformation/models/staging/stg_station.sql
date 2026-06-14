@@ -8,7 +8,11 @@ SELECT
     NULL AS address,
     (json -> 'coordonnees_geo' ->> 'lon') :: DOUBLE PRECISION AS longitude,
     (json -> 'coordonnees_geo' ->> 'lat') :: DOUBLE PRECISION AS latitude,
-    json ->> 'is_installed' AS STATUS,
+    CASE 
+    	 WHEN json ->> 'is_installed' = 'OUI' THEN 'open'
+    	 WHEN json ->> 'is_installed' = 'NON' THEN 'closed'
+    	 ELSE 'unknown'
+    END AS STATUS,
     (json ->> 'capacity') :: INTEGER AS capacity,
     (json ->> 'numdocksavailable') :: INTEGER AS bicycle_docks_available,
     (json ->> 'numbikesavailable') :: INTEGER AS bicycle_available,
@@ -39,7 +43,11 @@ SELECT
     json ->> 'address' AS address,
     (json -> 'position' ->> 'lon') :: DOUBLE PRECISION AS longitude,
     (json -> 'position' ->> 'lat') :: DOUBLE PRECISION AS latitude,
-    json ->> 'status' AS STATUS,
+    CASE 
+    	 WHEN json ->> 'status' = 'OPEN' THEN 'open'
+    	 WHEN json ->> 'status' = 'CLOSED' THEN 'closed'
+    	 ELSE 'unknown'
+    END AS STATUS,
     (json ->> 'bike_stands') :: INTEGER AS capacity,
     (json ->> 'available_bike_stands') :: INTEGER AS bicycle_docks_available,
     (json ->> 'available_bikes') :: INTEGER AS bicycle_available,
@@ -61,7 +69,11 @@ SELECT
     NULL AS address,
     (json ->> 'lon') :: DOUBLE PRECISION AS longitude,
     (json ->> 'lat') :: DOUBLE PRECISION AS latitude,
-    json ->> 'is_installed' AS STATUS,
+    CASE 
+    	 WHEN json ->> 'is_installed' = '1' THEN 'open'
+    	 WHEN json ->> 'is_installed' = '0' THEN 'closed'
+    	 ELSE 'unknown'
+    END AS STATUS,
     (json ->> 'to') :: INTEGER AS capacity,
     (json ->> 'num_docks_available') :: INTEGER AS bicycle_docks_available,
     (json ->> 'av') :: INTEGER AS bicycle_available,
