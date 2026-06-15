@@ -11,7 +11,6 @@ Ce projet dbt (`transformation`) structure les données de vélos en libre-servi
 |--------|---------|-----------------|------|
 | **Staging** | `models/staging/` | `ephemeral` | Parse JSON depuis `staging_raw`, unifie les schémas par ville |
 | **Consolidate** | `models/consolidate/` | `incremental` (merge) | Tables historisées stations, villes, relevés |
-| **Star model** | `models/star_model/` | `incremental` (merge) | `dim_*` et `fact_station_statement` |
 | **Analytics** | `models/analytics/` | `view` | Métriques exposées à Streamlit |
 
 ## Variables projet

@@ -120,7 +120,7 @@ models:
       - name: last_statement_date
         description: "Horodatage du dernier relevé."
 
-  - name: available_emplacement_by_city
+  - name: city_available_emplacement
     description: >
       Somme des places libres (bicycle_docks_available) par ville
     columns:
@@ -134,7 +134,7 @@ models:
       - name: bicycle_available
         description: "Total des vélos disponibles pour la ville."
 
-  - name: total_capacity_by_city
+  - name: city_total_capacity
     description: "Capacité totale des stations par ville."
     columns:
       - name: city_name

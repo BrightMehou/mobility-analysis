@@ -96,13 +96,26 @@ with engine.connect() as con:
         if df_global_status.empty:
             st.info("Aucun statut global disponible.")
         else:
-            st.dataframe(df_global_status, width="stretch")
+            fig_status = px.pie(
+                df_global_status,
+                names="status",
+                values="nb",
+                title="Répartition des statuts des stations",
+                color="status",
+                color_discrete_map={
+                    "open": "green",
+                    "closed": "red",
+                    "unknown": "yellow",
+                },
+            )
+            fig_status.update_traces(textinfo="percent+label")
+            st.plotly_chart(fig_status, use_container_width=True)
 
     with tab_city:
         st.subheader("🏙️ Indicateurs par ville")
         queries_city: list[tuple[str, str]] = [
-            ("Emplacements dispo par ville", "select * from available_emplacement_by_city;"),
-            ("Capacité totale par ville", "select * from total_capacity_by_city;"),
+            ("Emplacements dispo par ville", "select * from city_available_emplacement;"),
+            ("Capacité totale par ville", "select * from city_total_capacity;"),
         ]
 
         for title, query in queries_city:

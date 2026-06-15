@@ -11,8 +11,10 @@ exposures:
       Tableau de bord interactif des stations de vélos (données temps réel et indicateurs clés).
     depends_on:
       - ref('map_station')
-      - ref('available_emplacement_by_city')
-      - ref('total_capacity_by_city')
+      - ref('city_available_emplacement')
+      - ref('city_total_capacity')
+      - ref('global_metrics')
+      - ref('global_status')
     owner:
       name: "Equipe Data"
       email: "data-team@entreprise.com"
