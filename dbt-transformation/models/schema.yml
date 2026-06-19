@@ -145,6 +145,18 @@ models:
       - name: total_capacity
         description: "Somme des capacity des stations de la ville."
 
+  - name: city_station_status
+    description: "Décompte des stations par statut pour chaque ville."
+    columns:
+      - name: city_name
+        description: "Nom de la ville (dim_city)."
+        data_tests:
+          - not_null
+      - name: status
+        description: "Statut de la station (open/closed/unknown)."
+      - name: nb
+        description: "Nombre de stations pour ce statut dans la ville."
+
   - name: global_status
     description: "Décompte des stations selon leur statut."
     columns:

@@ -13,6 +13,7 @@ exposures:
       - ref('map_station')
       - ref('city_available_emplacement')
       - ref('city_total_capacity')
+      - ref('city_station_status')
       - ref('global_metrics')
       - ref('global_status')
     owner:

@@ -90,7 +90,6 @@ with engine.connect() as con:
 
         logger.info("Données globales chargées.")
 
-        st.markdown(f"**Statut global des stations**")
         query_global_status = "select * from global_status;"
         df_global_status = load_dataframe(con, query_global_status)
         if df_global_status.empty:
@@ -116,6 +115,7 @@ with engine.connect() as con:
         queries_city: list[tuple[str, str]] = [
             ("Emplacements dispo par ville", "select * from city_available_emplacement;"),
             ("Capacité totale par ville", "select * from city_total_capacity;"),
+            ("Statuts des stations par ville", "select * from city_station_status;"),
         ]
 
         for title, query in queries_city:
