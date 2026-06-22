@@ -63,9 +63,10 @@ def load_dataframe(con, query: str) -> pd.DataFrame:
         logger.warning("Erreur lors du chargement du DataFrame : %s", exc)
         return pd.DataFrame()
 
-tab_global, tab_city, tab_station = st.tabs(
+tab_global, tab_department, tab_city, tab_station = st.tabs(
     [
         "🌐 Global",
+        "🏛️ Département",
         "🏙️ City",
         "🗺️ Station",
     ]
@@ -119,6 +120,22 @@ with engine.connect() as con:
         ]
 
         for title, query in queries_city:
+            st.markdown(f"**{title}**")
+            df = load_dataframe(con, query)
+            if df.empty:
+                st.warning("Aucune donnée disponible pour cette vue.")
+            st.dataframe(df, width="stretch")
+            logger.info(f"Données pour '{title}' chargées.")
+
+    with tab_department:
+        st.subheader("🏛️ Indicateurs par département")
+        queries_department: list[tuple[str, str]] = [
+            ("Emplacements dispo par département", "select * from department_available_emplacement;"),
+            ("Capacité totale par département", "select * from department_total_capacity;"),
+            ("Statuts des stations par département", "select * from department_station_status;"),
+        ]
+
+        for title, query in queries_department:
             st.markdown(f"**{title}**")
             df = load_dataframe(con, query)
             if df.empty:

@@ -70,6 +70,33 @@ models:
         data_type: date
         constraints:
           - type: not_null
+  - name: department_available_emplacement
+    description: >
+      Somme des places libres (bicycle_docks_available) et des vélos disponibles par département.
+    columns:
+      - name: code_departement
+        description: "Code du département."
+      - name: bicycle_docks_available
+        description: "Total des emplacements libres pour le département."
+      - name: bicycle_available
+        description: "Total des vélos disponibles pour le département."
+  - name: department_total_capacity
+    description: "Capacité totale des stations par département."
+    columns:
+      - name: code_departement
+        description: "Code du département."
+      - name: total_capacity
+        description: "Somme des capacités des stations du département."
+  - name: department_station_status
+    description: "Décompte des stations par statut pour chaque département."
+    columns:
+      - name: code_departement
+        description: "Code du département."
+      - name: status
+        description: "Statut de la station (open/closed/unknown)."
+      - name: nb
+        description: "Nombre de stations pour ce statut dans le département."
+
   - name: city
     description: "Table des villes avec le nombre d’habitants."
     config:
@@ -82,6 +109,9 @@ models:
           - type: primary_key
       - name: name
         description: "Nom de la ville."
+        data_type: text
+      - name: code_departement
+        description: "Code du département."
         data_type: text
       - name: nb_inhabitants
         description: "Nombre d’habitants."

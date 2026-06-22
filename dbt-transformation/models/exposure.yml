@@ -8,12 +8,16 @@ exposures:
     maturity: high
     url: http://localhost:8501
     description: >
-      Tableau de bord interactif des stations de vélos (données temps réel et indicateurs clés).
+      Tableau de bord interactif des stations de vélos (données temps réel et indicateurs clés),
+      incluant des indicateurs par ville et par département.
     depends_on:
       - ref('map_station')
       - ref('city_available_emplacement')
       - ref('city_total_capacity')
       - ref('city_station_status')
+      - ref('department_available_emplacement')
+      - ref('department_total_capacity')
+      - ref('department_station_status')
       - ref('global_metrics')
       - ref('global_status')
     owner:

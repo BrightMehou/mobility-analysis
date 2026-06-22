@@ -2,6 +2,7 @@
 SELECT
   id,
   NAME,
+  code_departement,
   nb_inhabitants,
   created_date :: DATE AS created_date
 FROM
