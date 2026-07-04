@@ -21,4 +21,5 @@ Codes ville préfixant les identifiants station (`dbt_project.yml`) :
 - `NANTES_CITY_CODE` (défaut : 2)
 - `TOULOUSE_CITY_CODE` (défaut : 3)
 - `STRASBOURG_CITY_CODE` (défaut : 4)
+- `BORDEAUX_CITY_CODE` (défaut : 5)
 {% enddocs %}

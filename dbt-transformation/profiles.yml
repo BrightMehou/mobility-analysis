@@ -1,7 +1,7 @@
-transformation:                           
-  target: transformation
+mobility_analysis:                           
+  target: mobility_analysis
   outputs:
-    transformation:
+    mobility_analysis:
       type: postgres
       host: "{{ env_var('DB_HOST', 'localhost') }}"  
       user: "{{ env_var('DB_USER', 'postgres') }}"   

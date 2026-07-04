@@ -11,6 +11,7 @@ Les données sont stockées dans Postgres, transformées à l’aide de DBT (Dat
 - [API Nantes](https://data.nantesmetropole.fr/explore/dataset/244400404_stations-velos-libre-service-nantes-metropole-disponibilites/api/)  
 - [API Toulouse](https://data.toulouse-metropole.fr/explore/dataset/api-velo-toulouse-temps-reel/api/)  
 - [API Strasbourg](https://data.strasbourg.eu/explore/dataset/stations-velhop/api/)  
+- [API Bordeaux](https://datahub.bordeaux-metropole.fr/explore/dataset/ci_vcub_p/information/)
 - [API Open Data Communes](https://geo.api.gouv.fr/communes)  
 
 ---
