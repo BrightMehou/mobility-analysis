@@ -110,3 +110,29 @@ FROM
     jsonb_array_elements(data) AS json
 WHERE
     nom = 'bordeaux.json'
+UNION
+ALL -- Marseille
+SELECT
+    '{{ var("MARSEILLE_CITY_CODE", "6") }}' || '-' || (json ->> 'station_id') AS id,
+    json ->> 'station_id' AS code,
+    json ->> 'name' AS name,
+    'Marseille' AS city_name,
+    '13055' AS city_code,
+    NULL AS address,
+    (json -> 'point_geo'->> 'lon') :: DOUBLE PRECISION AS longitude,
+    (json -> 'point_geo' ->> 'lat') :: DOUBLE PRECISION AS latitude,
+    CASE 
+    	 WHEN json ->> 'is_renting' = '1' THEN 'open'
+    	 WHEN json ->> 'is_renting' = '0' THEN 'closed'
+    	 ELSE 'unknown'
+    END AS STATUS,
+    (json ->> 'capacity') :: INTEGER AS capacity,
+    (json ->> 'num_bikes_available') :: INTEGER AS bicycle_docks_available,
+    (json ->> 'num_docks_available') :: INTEGER AS bicycle_available,
+    (json ->> 'last_reported_tr') :: TIMESTAMP AS last_statement_date,
+    current_date AS created_date
+FROM
+    staging_raw,
+    jsonb_array_elements(data) AS json
+WHERE
+    nom = 'marseille.json'

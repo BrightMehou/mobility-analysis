@@ -15,7 +15,7 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  mobility-analysis:
+  mobility_analysis:
     analytics:
       +materialized: view
       +group: analytics
@@ -34,3 +34,4 @@ vars:
   TOULOUSE_CITY_CODE : 3
   STRASBOURG_CITY_CODE : 4
   BORDEAUX_CITY_CODE : 5
+  MARSEILLE_CITY_CODE : 6

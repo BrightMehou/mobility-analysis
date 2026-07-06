@@ -12,6 +12,7 @@ Les données sont stockées dans Postgres, transformées à l’aide de DBT (Dat
 - [API Toulouse](https://data.toulouse-metropole.fr/explore/dataset/api-velo-toulouse-temps-reel/api/)  
 - [API Strasbourg](https://data.strasbourg.eu/explore/dataset/stations-velhop/api/)  
 - [API Bordeaux](https://datahub.bordeaux-metropole.fr/explore/dataset/ci_vcub_p/information/)
+- [API Marseille](https://data.ampmetropole.fr/explore/dataset/gbfs-extract-station-information/information/)
 - [API Open Data Communes](https://geo.api.gouv.fr/communes)  
 
 ---
