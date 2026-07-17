@@ -27,8 +27,6 @@ class Url(StrEnum):
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
 
 
-
-
 def fetch_and_store_data(url: str, file_name: str, label: str) -> None:
     data_to_store = "[]"
     try:
