@@ -7,7 +7,7 @@ Fonctionnalités principales
 
 import logging
 
-from utils import exec_sql
+from db import init_db
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,12 +19,4 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     logger.info("Initialisation de la base de données PostgreSQL.")
-
-    staging_table_query = """
-    CREATE TABLE IF NOT EXISTS staging_raw (
-        nom varchar PRIMARY KEY,
-        data jsonb NOT NULL
-    );
-    """
-
-    exec_sql(staging_table_query, "Création des tables de staging")
+    init_db()

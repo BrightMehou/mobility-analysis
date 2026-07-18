@@ -11,8 +11,8 @@ import logging
 from enum import StrEnum
 
 import requests
-
-from utils import store_json
+from sqlalchemy import text
+from db import engine
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +26,20 @@ class Url(StrEnum):
     STRASBOURG = "https://opendata.strasbourg.eu/api/explore/v2.1/catalog/datasets/stations-velhop/exports/json?lang=fr&timezone=Europe%2FBerlin"
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
 
+def store_json(name: str, raw_json: str, engine=None) -> None:
+    """Envoie des données JSON dans la table staging_raw."""
+    query = text(
+        """
+        INSERT INTO staging_raw (nom, data)
+        VALUES (:name, :data)
+        ON CONFLICT (nom) DO UPDATE SET data = EXCLUDED.data
+        """
+    )
+    with engine.begin() as connection:
+        connection.execute(query, {"name": name, "data": raw_json})
+    logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
 
-def fetch_and_store_data(url: str, file_name: str, label: str) -> None:
+def fetch_and_store_data(url: str, label: str) -> None:
     data_to_store = "[]"
     try:
         response = requests.get(url, timeout=30)
@@ -42,7 +54,7 @@ def fetch_and_store_data(url: str, file_name: str, label: str) -> None:
     except Exception as e:
         logger.error(f"❌ Erreur imprévue pour {label}: {e}")
     finally:
-        store_json(file_name, data_to_store)
+        store_json(f"{label}.json", data_to_store, engine)
         if data_to_store == "[]":
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 
@@ -55,4 +67,4 @@ def data_ingestion() -> None:
     for url in Url:
         label = url.name.lower()
         file_name = f"{label}.json"
-        fetch_and_store_data(url, file_name, label)
+        fetch_and_store_data(url, label)

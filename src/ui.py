@@ -17,8 +17,9 @@ from plotly.graph_objects import Figure
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
+from db import engine
 from ingestion import data_ingestion
-from utils import data_transformation, get_db_engine
+from run_dbt import data_transformation
 
 logging.basicConfig(
     level=logging.INFO,
@@ -72,7 +73,6 @@ tab_global, tab_department, tab_city, tab_station = st.tabs(
     ]
 )
 
-engine = get_db_engine()
 with engine.connect() as con:
     with tab_global:
         st.subheader("🌐 Indicateurs globaux")
