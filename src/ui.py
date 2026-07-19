@@ -8,18 +8,15 @@ Fonctionnalités principales :
 """
 
 import logging
-from collections.abc import Callable
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
-from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
 
-from db import engine
-from ingestion import data_ingestion
-from run_dbt import data_transformation
+
+from db import engine, load_dataframe
+from pipeline import pipeline
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,32 +34,12 @@ st.title("📊 Tableau de bord des stations de vélos 🚲")
 
 if st.button("🔄 Actualiser"):
     try:
-        with st.status("🚀 Lancement du pipeline...", expanded=True) as status:
-            steps: list[tuple[str, Callable[[], None]]] = [
-                ("Ingestion des données", data_ingestion),
-                ("Transformation des données", data_transformation),
-            ]
-
-            for label, func in steps:
-                status.update(label=label, state="running")
-                logger.info(label)
-                func()
-                status.update(label=f"✅ {label}", state="complete")
-
-            status.update(label="✅ Pipeline terminé avec succès !", state="complete")
+        with st.spinner("⏳ Execution du pipeline..."):
+            pipeline()
             st.success("Données alimentées et prêtes à l’affichage !")
-
     except Exception as e:
         logger.exception("Erreur pipeline")
-        st.error(f"❌ Échec du pipeline à l'étape '{label}' : {e}")
-
-
-def load_dataframe(con, query: str) -> pd.DataFrame:
-    try:
-        return pd.read_sql_query(text(query), con)
-    except (SQLAlchemyError, pd.errors.DatabaseError) as exc:
-        logger.warning("Erreur lors du chargement du DataFrame : %s", exc)
-        return pd.DataFrame()
+        st.error(f"❌ Échec du pipeline : {e}")
 
 tab_global, tab_department, tab_city, tab_station = st.tabs(
     [

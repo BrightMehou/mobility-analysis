@@ -2,9 +2,9 @@
 
 import logging
 import os
-
+import pandas as pd
 from sqlalchemy import create_engine, text
-
+from sqlalchemy.exc import SQLAlchemyError
 logger = logging.getLogger(__name__)
 
 DB_NAME: str = os.getenv("DB_NAME", "postgres")
@@ -27,3 +27,11 @@ def init_db() -> None:
     with engine.begin() as connection:
         connection.execute(text(staging_table_query))
     logger.info("Tables de staging initialisées.")
+
+
+def load_dataframe(con, query: str) -> pd.DataFrame:
+    try:
+        return pd.read_sql_query(text(query), con)
+    except (SQLAlchemyError, pd.errors.DatabaseError) as exc:
+        logger.warning("Erreur lors du chargement du DataFrame : %s", exc)
+        return pd.DataFrame()

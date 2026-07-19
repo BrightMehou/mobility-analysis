@@ -13,7 +13,7 @@ from enum import StrEnum
 import requests
 from sqlalchemy import text
 from db import engine
-
+from dbt.cli.main import dbtRunner, dbtRunnerResult
 logger = logging.getLogger(__name__)
 
 
@@ -59,12 +59,25 @@ def fetch_and_store_data(url: str, label: str) -> None:
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 
 
-def data_ingestion() -> None:
+def pipeline() -> bool:
     """
     Récupère les données en temps réel des stations de vélo et des communes françaises.
     Si une source échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
+    Exécute la commande `dbt run`.
     """
     for url in Url:
         label = url.name.lower()
-        file_name = f"{label}.json"
         fetch_and_store_data(url, label)
+        
+    logger.info("🚀 Démarrage de la commande dbt run")
+
+    dbt = dbtRunner()
+    cli_args = [
+        "run",
+        "--project-dir",
+        "dbt-transformation",
+        "--profiles-dir",
+        "dbt-transformation",
+    ]
+    res: dbtRunnerResult = dbt.invoke(cli_args)
+    return res.success

@@ -1,7 +1,12 @@
-## 🚴 MOBILITY-ANALYSIS
+## 🚴 MOBILITY ANALYSIS
 
-Ce projet propose la mise en place d’un pipeline pour collecter, transformer et analyser les données des systèmes de vélos en libre-service de Paris, Nantes, Toulouse et Strasbourg.
-Les données sont stockées dans Postgres, transformées à l’aide de DBT (Data Build Tool) pour assurer la qualité, la modularité et la traçabilité des modèles de données. Enfin, elles sont présentées via Streamlit pour faciliter l’exploration et la visualisation des résultats.
+Ce projet collecte des données en temps réel sur les stations de vélos en libre-service de plusieurs villes françaises, puis les transforme avec dbt et les expose via un tableau de bord Streamlit.
+
+L’application complète comprend :
+- une ingestion de données depuis des API publiques,
+- un stockage dans PostgreSQL,
+- des modèles dbt pour la transformation et l’agrégation,
+- une interface Streamlit pour explorer les métriques par ville, département et station.
 
 ---
 
@@ -17,83 +22,60 @@ Les données sont stockées dans Postgres, transformées à l’aide de DBT (Dat
 
 ---
 
-## 🗂️ **Structure du Projet**
+## 🗂️ Structure du projet
 
 ```plaintext
-├── dbt-transformation/        # Projet DBT pour la transformation des données
-├── src/                       # Code source principal
-│   ├── ingestion.py           # Ingestion des données en temps réel
-│   ├── init_db.py             # Fichier d'initialisation de la base de données
-│   ├── ui.py                  # Interface utilisateur
-│   └── utils.py               # Fonctions utilitaires
-├── docker-compose.yml         # Orchestration des services 
-├── Dockerfile                 # Configuration Docker
-├── init_app.sh                # Script pour initialiser l'application dans docker
-├── pyproject.toml             # Configuration du projet uv
-├── README.md                  # Documentation du projet
-└── uv.lock                    # Verrouillage des dépendances uv
+├── dbt-transformation/        # Projet dbt : staging, consolidate, analytics
+├── src/                       # Code Python principal
+│   ├── db.py                  # Connexion PostgreSQL et helpers DB
+│   ├── init_db.py             # Initialisation des tables de base
+│   ├── pipeline.py            # Ingestion des données et lancement de dbt run
+│   └── ui.py                  # Tableau de bord Streamlit
+├── docker-compose.yml         # Orchestration des services PostgreSQL et app
+├── Dockerfile                 # Image applicative Python + dbt + Streamlit
+├── pyproject.toml             # Dépendances du projet
+├── README.md                  # Documentation
+└── uv.lock                    # Verrouillage des dépendances
 ```
 
 ---
 
-## ⚙️ **Workflow du Projet**
+## ⚙️ Fonctionnement du pipeline
 
-### **1. Ingestion des données**
-**Objectif** : Récupérer des données brutes depuis des sources externes.
-#### Étapes : 
-Dans le fichier Python `ingestion.py`
-- **`get_realtime_bicycle_data`** : 
-  - Récupère les données en temps réel sur les vélos disponibles des villes (Paris, Nantes, Toulouse, Strasbourg).
-- **`get_commune_data`** : 
-  - Récupère des données sur les communes.
+1. Ingestion des données
+   - Le script [src/pipeline.py](src/pipeline.py) interroge les API publiques.
+   - Les réponses brutes sont stockées dans la table PostgreSQL `staging_raw` sous forme de JSON.
 
-#### Produits :
-- Les données brutes sont enregistrées dans les fichiers JSON dans la table de staging dédiée.
+2. Transformation dbt
+   - Le projet dbt dans [dbt-transformation](dbt-transformation) crée des modèles de type staging, consolidate et analytics.
+   - Les vues analytiques servent ensuite de base au tableau de bord.
 
-
-### **2. Transformation des données avec DBT**  
-**Objectif** : Organiser, nettoyer et structurer les données brutes issues des API pour les rendre exploitables.
-
-#### Étapes :  
-La transformation des données est orchestrée via **DBT**, selon une architecture modulaire :
-
-- 📁 **Staging**  
-  - Création de tables temporaires à partir des fichiers bruts stockés dans la table staging_raw.  
-  - Ces modèles permettent de normaliser les formats et de préparer les données pour les étapes suivantes.
-
-- 📁 **Consolidate**  
-  - Construction de tables consolidées, alimentées en **mode incrémental**, pour intégrer les nouvelles données sans retraiter l’ensemble du dataset.  
-  - Les données des communes et des stations sont nettoyées, enrichies et structurées pour l’analyse.
-
-#### Produits :  
-- Les tables consolidées sont alimentées et servent de base aux modèles analytiques et aux vues agrégées.
+3. Visualisation
+   - L’interface Streamlit dans [src/ui.py](src/ui.py) permet de consulter :
+     - des indicateurs globaux,
+     - des métriques par ville,
+     - des métriques par département,
+     - une carte interactive des stations.
 
 ---
 
-### **3. Modélisation analytique**  
-**Objectif** : Synthétiser les données consolidées pour produire des modèles analytiques et des vues prêtes à l’exploration.
+## 🚀 Démarrage rapide avec Docker
 
-#### Étapes :  
+Prérequis : Docker et Docker Compose installés.
 
-- 📁 **Analytics**  
-  - Génération de **vues analytiques** prêtes à être exposées dans **Streamlit**.  
-  - Ces vues permettent d’explorer les métriques clés et les tendances du système de vélos en libre-service.
+### Lancer l’application
 
-#### Produits :  
-- Les vues finales créées et intégrées à l’interface Streamlit pour la visualisation interactive.
+```bash
+docker compose up -d --build
+```
 
----
+### Accéder aux services
 
-## 🚀 **Installation et Exécution**
+- Tableau de bord Streamlit : http://localhost:8501
+- Documentation dbt : http://localhost:8080
 
+### Arrêter l’application
 
-1. **Construire les images Docker et lancer les containeurs :**  
-   ```bash
-   docker-compose up -d
-   ```
-   
-2. **Accéder à l'interface streamlit :**  
-   Rendez-vous sur [http://localhost:8501](http://localhost:8501) 
-
-3. **Accéder à la documentation DBT :**  
-   Rendez-vous sur [http://localhost:8080](http://localhost:8080) 
+```bash
+docker compose down
+```
