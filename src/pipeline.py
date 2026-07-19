@@ -5,6 +5,7 @@ Fonctionnalités principales :
 - Récupération des données vélo en temps réel des stations de vélo.
 - Récupération des données des communes françaises via l'API geo.gouv.fr.
 - Stockage des données dans PostgreSQL via je format JSONB.
+- Exécution de la commande `dbt run` pour transformer les données.
 """
 
 import logging
@@ -68,7 +69,7 @@ def pipeline() -> bool:
     for url in Url:
         label = url.name.lower()
         fetch_and_store_data(url, label)
-        
+
     logger.info("🚀 Démarrage de la commande dbt run")
 
     dbt = dbtRunner()

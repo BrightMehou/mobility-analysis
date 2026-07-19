@@ -9,11 +9,9 @@ Fonctionnalités principales :
 
 import logging
 
-import pandas as pd
 import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
-
 
 from db import engine, load_dataframe
 from pipeline import pipeline
@@ -123,7 +121,7 @@ with engine.connect() as con:
     with tab_station:
         st.subheader("🗺️ Carte interactive des stations")
         query_map: str = "select * from map_station;"
-        df_map: pd.DataFrame = load_dataframe(con, query_map)
+        df_map = load_dataframe(con, query_map)
 
         if df_map.empty:
             st.warning("Aucune donnée disponible pour la carte.")

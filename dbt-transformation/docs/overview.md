@@ -1,9 +1,8 @@
 {% docs __overview__ %}
 
-# Mobility Analysis — transformations dbt
+# Mobility Analysis
 
 Ce projet dbt (`transformation`) structure les données de vélos en libre-service
-(Paris, Nantes, Toulouse, Strasbourg) ingérées dans PostgreSQL.
 
 ## Couches
 
@@ -22,4 +21,5 @@ Codes ville préfixant les identifiants station (`dbt_project.yml`) :
 - `TOULOUSE_CITY_CODE` (défaut : 3)
 - `STRASBOURG_CITY_CODE` (défaut : 4)
 - `BORDEAUX_CITY_CODE` (défaut : 5)
+- `MARSEILLE_CITY_CODE` (défaut : 5)
 {% enddocs %}
