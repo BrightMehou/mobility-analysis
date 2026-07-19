@@ -27,6 +27,7 @@ class Url(StrEnum):
     STRASBOURG = "https://opendata.strasbourg.eu/api/explore/v2.1/catalog/datasets/stations-velhop/exports/json?lang=fr&timezone=Europe%2FBerlin"
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
 
+
 def store_json(name: str, raw_json: str, engine=None) -> None:
     """Envoie des données JSON dans la table staging_raw."""
     query = text(
@@ -39,6 +40,7 @@ def store_json(name: str, raw_json: str, engine=None) -> None:
     with engine.begin() as connection:
         connection.execute(query, {"name": name, "data": raw_json})
     logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
+
 
 def fetch_and_store_data(url: str, label: str) -> None:
     data_to_store = "[]"
@@ -60,7 +62,7 @@ def fetch_and_store_data(url: str, label: str) -> None:
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 
 
-def pipeline() -> bool:
+def pipeline() -> None:
     """
     Récupère les données en temps réel des stations de vélo et des communes françaises.
     Si une source échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
@@ -80,5 +82,4 @@ def pipeline() -> bool:
         "--profiles-dir",
         "dbt-transformation",
     ]
-    res: dbtRunnerResult = dbt.invoke(cli_args)
-    return res.success
+    dbt.invoke(cli_args)

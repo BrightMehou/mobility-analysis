@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine, text, URL
 from sqlalchemy.exc import SQLAlchemyError
+
 logger = logging.getLogger(__name__)
 
 DB_URL = URL.create(
