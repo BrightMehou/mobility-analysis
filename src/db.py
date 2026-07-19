@@ -2,8 +2,9 @@
 
 import logging
 import os
+
 import pandas as pd
-from sqlalchemy import create_engine, text, URL
+from sqlalchemy import URL, create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
@@ -33,9 +34,10 @@ def init_db() -> None:
     logger.info("Tables de staging initialisées.")
 
 
-def load_dataframe(con, query: str) -> pd.DataFrame:
+def load_dataframe(engine, query: str) -> pd.DataFrame:
     try:
-        return pd.read_sql_query(text(query), con)
+        with engine.connect() as con:
+            return pd.read_sql_query(text(query), con)
     except (SQLAlchemyError, pd.errors.DatabaseError) as exc:
         logger.warning("Erreur lors du chargement du DataFrame : %s", exc)
         return pd.DataFrame()

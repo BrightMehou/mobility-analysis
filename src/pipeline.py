@@ -12,9 +12,11 @@ import logging
 from enum import StrEnum
 
 import requests
+from dbt.cli.main import dbtRunner
 from sqlalchemy import text
+
 from db import engine
-from dbt.cli.main import dbtRunner, dbtRunnerResult
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,7 +30,7 @@ class Url(StrEnum):
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
 
 
-def store_json(name: str, raw_json: str, engine=None) -> None:
+def store_json(name: str, raw_json: str) -> None:
     """Envoie des données JSON dans la table staging_raw."""
     query = text(
         """
@@ -57,7 +59,7 @@ def fetch_and_store_data(url: str, label: str) -> None:
     except Exception as e:
         logger.error(f"❌ Erreur imprévue pour {label}: {e}")
     finally:
-        store_json(f"{label}.json", data_to_store, engine)
+        store_json(f"{label}.json", data_to_store)
         if data_to_store == "[]":
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 
