@@ -13,9 +13,8 @@ from enum import StrEnum
 
 import requests
 from dbt.cli.main import dbtRunner
-from sqlalchemy import text
 
-from db import engine
+from db import db
 
 logger = logging.getLogger(__name__)
 
@@ -28,20 +27,6 @@ class Url(StrEnum):
     PARIS = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/exports/json"
     STRASBOURG = "https://opendata.strasbourg.eu/api/explore/v2.1/catalog/datasets/stations-velhop/exports/json?lang=fr&timezone=Europe%2FBerlin"
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
-
-
-def store_json(name: str, raw_json: str) -> None:
-    """Envoie des données JSON dans la table staging_raw."""
-    query = text(
-        """
-        INSERT INTO staging_raw (nom, data)
-        VALUES (:name, :data)
-        ON CONFLICT (nom) DO UPDATE SET data = EXCLUDED.data
-        """
-    )
-    with engine.begin() as connection:
-        connection.execute(query, {"name": name, "data": raw_json})
-    logger.info("Données JSON insérées dans la table staging_raw de PostgreSQL.")
 
 
 def fetch_and_store_data(url: str, label: str) -> None:
@@ -59,7 +44,7 @@ def fetch_and_store_data(url: str, label: str) -> None:
     except Exception as e:
         logger.error(f"❌ Erreur imprévue pour {label}: {e}")
     finally:
-        store_json(f"{label}.json", data_to_store)
+        db.store_json(f"{label}.json", data_to_store)
         if data_to_store == "[]":
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 

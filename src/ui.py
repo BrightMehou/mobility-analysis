@@ -13,7 +13,7 @@ import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
 
-from db import engine, load_dataframe
+from db import db
 from pipeline import pipeline
 
 logging.basicConfig(
@@ -34,7 +34,7 @@ if st.button("🔄 Actualiser"):
     try:
         with st.spinner("⏳ Execution du pipeline..."):
             pipeline()
-            st.success("Données alimentées et prêtes à l’affichage !")
+            st.success("Execution du pipeline terminée avec succès !")
     except Exception as e:
         logger.exception("Erreur pipeline")
         st.error(f"❌ Échec du pipeline : {e}")
@@ -52,7 +52,7 @@ tab_global, tab_department, tab_city, tab_station = st.tabs(
 with tab_global:
     st.subheader("🌐 Indicateurs globaux")
     query_global_metrics = "select * from global_metrics;"
-    df_global_metrics = load_dataframe(engine, query_global_metrics)
+    df_global_metrics = db.query_to_df(query_global_metrics)
 
     if df_global_metrics.empty:
         st.warning("Aucune donnée globale disponible pour le moment.")
@@ -67,7 +67,7 @@ with tab_global:
     logger.info("Données globales chargées.")
 
     query_global_status = "select * from global_status;"
-    df_global_status = load_dataframe(engine, query_global_status)
+    df_global_status = db.query_to_df(query_global_status)
     if df_global_status.empty:
         st.info("Aucun statut global disponible.")
     else:
@@ -99,7 +99,7 @@ with tab_city:
 
     for title, query in queries_city:
         st.markdown(f"**{title}**")
-        df = load_dataframe(engine, query)
+        df = db.query_to_df(query)
         if df.empty:
             st.warning("Aucune donnée disponible pour cette vue.")
         st.dataframe(df, width="stretch")
@@ -124,7 +124,7 @@ with tab_department:
 
     for title, query in queries_department:
         st.markdown(f"**{title}**")
-        df = load_dataframe(engine, query)
+        df = db.query_to_df(query)
         if df.empty:
             st.warning("Aucune donnée disponible pour cette vue.")
         st.dataframe(df, width="stretch")
@@ -133,7 +133,7 @@ with tab_department:
 with tab_station:
     st.subheader("🗺️ Carte interactive des stations")
     query_map: str = "select * from map_station;"
-    df_map = load_dataframe(engine, query_map)
+    df_map = db.query_to_df(query_map)
 
     if df_map.empty:
         st.warning("Aucune donnée disponible pour la carte.")
