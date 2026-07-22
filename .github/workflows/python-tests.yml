@@ -26,9 +26,6 @@ jobs:
 
     - name: Install dependencies
       run: uv sync
-    
-    - name: build model
-      run: uv run python src/ml/train.py
       
     - name: Run tests
       run: uv run pytest
