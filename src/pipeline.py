@@ -20,8 +20,12 @@ logger = logging.getLogger(__name__)
 
 
 class Url(StrEnum):
-    BORDEAUX = "https://datahub.bordeaux-metropole.fr/api/explore/v2.1/catalog/datasets/ci_vcub_p/exports/json?lang=fr&timezone=Europe%2FBerlin"
+    # Découpage administratif
     COMMUNES = "https://geo.api.gouv.fr/communes"
+    DEPARTEMENTS = "https://geo.api.gouv.fr/departements"
+    REGIONS = "https://geo.api.gouv.fr/regions"
+    # Stations de vélo en temps réel
+    BORDEAUX = "https://datahub.bordeaux-metropole.fr/api/explore/v2.1/catalog/datasets/ci_vcub_p/exports/json?lang=fr&timezone=Europe%2FBerlin"
     MARSEILLE = "https://data.ampmetropole.fr/api/explore/v2.1/catalog/datasets/gbfs-extract-station-information/exports/json?lang=fr&timezone=Europe%2FBerlin"
     NANTES = "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_stations-velos-libre-service-nantes-metropole-disponibilites/exports/json"
     PARIS = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/exports/json"
