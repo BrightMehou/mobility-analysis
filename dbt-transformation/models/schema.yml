@@ -4,10 +4,77 @@ models:
 
   - name: stg_city
     description: "Table de staging des villes avec leurs informations brutes."
+  - name: stg_department
+    description: "Table de staging des départements avec leurs informations brutes."
+  - name: stg_region
+    description: "Table de staging des régions avec leurs informations brutes."
   - name: stg_station
     description: "Table de staging unifiant les informations des stations des différentes villes."
 
-
+  - name: city
+    description: "Table des villes avec le nombre d’habitants."
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: id
+        description: "Identifiant unique de la ville."
+        data_type: text
+        constraints:
+          - type: primary_key
+      - name: name
+        description: "Nom de la ville."
+        data_type: text
+      - name: id_departement
+        description: "Code du département."
+        data_type: text
+      - name: nb_inhabitants
+        description: "Nombre d’habitants."
+        data_type: integer
+      - name: created_date
+        description: "Date de création de l’enregistrement."
+        data_type: date
+        constraints:
+          - type: not_null
+  - name: department
+    description: "Table des départements avec leurs informations générales."
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: id
+        description: "Identifiant unique du département."
+        data_type: text
+        constraints:
+          - type: primary_key
+      - name: name
+        description: "Nom du département."
+        data_type: text
+      - name: id_region
+        description: "Code de la région."
+        data_type: text
+      - name: created_date
+        description: "Date de création de l’enregistrement."
+        data_type: date
+        constraints:
+          - type: not_null
+  - name: region
+    description: "Table des régions avec leurs informations générales."
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: id
+        description: "Identifiant unique de la région."
+        data_type: text
+        constraints:
+          - type: primary_key
+      - name: name
+        description: "Nom de la région."
+        data_type: text
+      - name: created_date
+        description: "Date de création de l’enregistrement."
+        data_type: date
+        constraints:
+          - type: not_null
+          
   - name: station
     description: "Table des stations de vélos avec leurs informations générales et de disponibilité."
     config:
@@ -74,7 +141,7 @@ models:
     description: >
       Somme des places libres (bicycle_docks_available) et des vélos disponibles par département.
     columns:
-      - name: code_departement
+      - name: id_departement
         description: "Code du département."
       - name: bicycle_docks_available
         description: "Total des emplacements libres pour le département."
@@ -83,44 +150,19 @@ models:
   - name: department_total_capacity
     description: "Capacité totale des stations par département."
     columns:
-      - name: code_departement
+      - name: id_departement
         description: "Code du département."
       - name: total_capacity
         description: "Somme des capacités des stations du département."
   - name: department_station_status
     description: "Décompte des stations par statut pour chaque département."
     columns:
-      - name: code_departement
+      - name: id_departement
         description: "Code du département."
       - name: status
         description: "Statut de la station (open/closed/unknown)."
       - name: nb
         description: "Nombre de stations pour ce statut dans le département."
-
-  - name: city
-    description: "Table des villes avec le nombre d’habitants."
-    config:
-      contract: {enforced: true}
-    columns:
-      - name: id
-        description: "Identifiant unique de la ville."
-        data_type: text
-        constraints:
-          - type: primary_key
-      - name: name
-        description: "Nom de la ville."
-        data_type: text
-      - name: code_departement
-        description: "Code du département."
-        data_type: text
-      - name: nb_inhabitants
-        description: "Nombre d’habitants."
-        data_type: integer
-      - name: created_date
-        description: "Date de création de l’enregistrement."
-        data_type: date
-        constraints:
-          - type: not_null
 
   - name: map_station
     description: >

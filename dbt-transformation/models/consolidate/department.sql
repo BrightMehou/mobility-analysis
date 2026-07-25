@@ -2,11 +2,10 @@
 SELECT
   id,
   NAME,
-  id_departement,
-  nb_inhabitants,
+  id_region,
   created_date :: DATE AS created_date
 FROM
-  {{ ref('stg_city') }} {% if is_incremental() %}
+  {{ ref('stg_department') }} {% if is_incremental() %}
 WHERE
   created_date >= (
     SELECT
