@@ -143,6 +143,8 @@ models:
     columns:
       - name: id_departement
         description: "Code du département."
+      - name: department_name
+        description: "Nom du département."
       - name: bicycle_docks_available
         description: "Total des emplacements libres pour le département."
       - name: bicycle_available
@@ -152,6 +154,8 @@ models:
     columns:
       - name: id_departement
         description: "Code du département."
+      - name: department_name
+        description: "Nom du département."
       - name: total_capacity
         description: "Somme des capacités des stations du département."
   - name: department_station_status
@@ -159,6 +163,8 @@ models:
     columns:
       - name: id_departement
         description: "Code du département."
+      - name: department_name
+        description: "Nom du département."
       - name: status
         description: "Statut de la station (open/closed/unknown)."
       - name: nb

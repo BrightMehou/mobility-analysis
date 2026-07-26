@@ -9,7 +9,9 @@ WITH department_aggregation AS (
 )
 
 SELECT
-    id_departement,
-    bicycle_docks_available,
-    bicycle_available
-FROM department_aggregation
+    da.id_departement AS id_departement,
+    d.name AS department_name,
+    da.bicycle_docks_available,
+    da.bicycle_available
+FROM department_aggregation AS da
+LEFT JOIN {{ ref('department') }} AS d ON da.id_departement = d.id
