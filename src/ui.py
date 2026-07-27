@@ -39,9 +39,10 @@ if st.button("🔄 Actualiser"):
         logger.exception("Erreur pipeline")
         st.error(f"❌ Échec du pipeline : {e}")
 
-tab_global, tab_department, tab_city, tab_station = st.tabs(
+tab_global, tab_region, tab_department, tab_city, tab_station = st.tabs(
     [
         "🌐 Global",
+        "🗺️ Région",
         "🏛️ Département",
         "🏙️ City",
         "🗺️ Station",
@@ -123,6 +124,31 @@ with tab_department:
     ]
 
     for title, query in queries_department:
+        st.markdown(f"**{title}**")
+        df = db.query_to_df(query)
+        if df.empty:
+            st.warning("Aucune donnée disponible pour cette vue.")
+        st.dataframe(df, width="stretch")
+        logger.info(f"Données pour '{title}' chargées.")
+
+with tab_region:
+    st.subheader("🗺️ Indicateurs par région")
+    queries_region: list[tuple[str, str]] = [
+        (
+            "Emplacements dispo par région",
+            "select * from region_available_emplacement;",
+        ),
+        (
+            "Capacité totale par région",
+            "select * from region_total_capacity;",
+        ),
+        (
+            "Statuts des stations par région",
+            "select * from region_station_status;",
+        ),
+    ]
+
+    for title, query in queries_region:
         st.markdown(f"**{title}**")
         df = db.query_to_df(query)
         if df.empty:

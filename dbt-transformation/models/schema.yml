@@ -170,6 +170,39 @@ models:
       - name: nb
         description: "Nombre de stations pour ce statut dans le département."
 
+  - name: region_available_emplacement
+    description: >
+      Somme des places libres (bicycle_docks_available) et des vélos disponibles par région.
+    columns:
+      - name: id_region
+        description: "Code de la région."
+      - name: region_name
+        description: "Nom de la région."
+      - name: bicycle_docks_available
+        description: "Total des emplacements libres pour la région."
+      - name: bicycle_available
+        description: "Total des vélos disponibles pour la région."
+  - name: region_total_capacity
+    description: "Capacité totale des stations par région."
+    columns:
+      - name: id_region
+        description: "Code de la région."
+      - name: region_name
+        description: "Nom de la région."
+      - name: total_capacity
+        description: "Somme des capacités des stations de la région."
+  - name: region_station_status
+    description: "Décompte des stations par statut pour chaque région."
+    columns:
+      - name: id_region
+        description: "Code de la région."
+      - name: region_name
+        description: "Nom de la région."
+      - name: status
+        description: "Statut de la station (open/closed/unknown)."
+      - name: nb
+        description: "Nombre de stations pour ce statut dans la région."
+
   - name: map_station
     description: >
       Stations géolocalisées avec leur dernier relevé de disponibilité.

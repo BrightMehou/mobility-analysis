@@ -6,7 +6,7 @@ L’application complète comprend :
 - une ingestion de données depuis des API publiques,
 - un stockage dans PostgreSQL,
 - des modèles dbt pour la transformation et l’agrégation,
-- une interface Streamlit pour explorer les métriques par ville, département et station.
+- une interface Streamlit pour explorer les métriques par ville, département, région et station.
 
 ---
 
@@ -57,6 +57,7 @@ L’application complète comprend :
      - des indicateurs globaux,
      - des métriques par ville,
      - des métriques par département,
+     - des métriques par région,
      - une carte interactive des stations.
 
 ---
