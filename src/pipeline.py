@@ -14,7 +14,7 @@ from enum import StrEnum
 import requests
 from dbt.cli.main import dbtRunner
 
-from db import db
+from db import DatabaseClient
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class Url(StrEnum):
     TOULOUSE = "https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/api-velo-toulouse-temps-reel/exports/json?lang=fr&timezone=Europe%2FParis"
 
 
-def fetch_and_store_data(url: str, label: str) -> None:
+def fetch_and_store_data(url: str, label: str, db: DatabaseClient) -> None:
     data_to_store = "[]"
     try:
         response = requests.get(url, timeout=30)
@@ -53,7 +53,7 @@ def fetch_and_store_data(url: str, label: str) -> None:
             logger.warning(f"ℹ️ Fichier vide créé pour {label}")
 
 
-def pipeline() -> None:
+def pipeline(db: DatabaseClient) -> None:
     """
     Récupère les données en temps réel des stations de vélo et des communes françaises.
     Si une source échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
@@ -61,7 +61,7 @@ def pipeline() -> None:
     """
     for url in Url:
         label = url.name.lower()
-        fetch_and_store_data(url, label)
+        fetch_and_store_data(url, label, db)
 
     logger.info("🚀 Démarrage de la commande dbt run")
 

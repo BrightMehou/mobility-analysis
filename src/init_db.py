@@ -7,7 +7,7 @@ Fonctionnalités principales
 
 import logging
 
-from db import db
+from db import create_database_client
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,5 +18,6 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
+    db = create_database_client()
     logger.info("Initialisation de la base de données PostgreSQL.")
     db.init_db()

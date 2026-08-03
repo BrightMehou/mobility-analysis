@@ -58,5 +58,7 @@ class DatabaseClient:
             connection.execute(statement, {"name": name, "data": raw_json})
 
 
-engine = create_engine(DB_URL)
-db = DatabaseClient(engine)
+def create_database_client() -> DatabaseClient:
+    """Fabrique pour instancier le moteur de base de données de façon contrôlée."""
+    engine = create_engine(DB_URL, pool_pre_ping=True)
+    return DatabaseClient(engine)

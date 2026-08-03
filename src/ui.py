@@ -13,7 +13,7 @@ import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
 
-from db import db
+from db import create_database_client
 from pipeline import pipeline
 
 logging.basicConfig(
@@ -28,12 +28,19 @@ st.set_page_config(page_title="Tableau de bord mobilité", page_icon="🚲", lay
 st.logo("🚲")
 
 
+@st.cache_resource(show_spinner=False)
+def get_db_client():
+    return create_database_client()
+
+
+db = get_db_client()
+
 st.title("📊 Tableau de bord des stations de vélos 🚲")
 
 if st.button("🔄 Actualiser"):
     try:
         with st.spinner("⏳ Execution du pipeline..."):
-            pipeline()
+            pipeline(db)
             st.success("Execution du pipeline terminée avec succès !")
     except Exception as e:
         logger.exception("Erreur pipeline")
