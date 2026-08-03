@@ -26,6 +26,7 @@ class Url(StrEnum):
     REGIONS = "https://geo.api.gouv.fr/regions"
     # Stations de vélo en temps réel
     BORDEAUX = "https://datahub.bordeaux-metropole.fr/api/explore/v2.1/catalog/datasets/ci_vcub_p/exports/json?lang=fr&timezone=Europe%2FBerlin"
+    LYON = "https://data.grandlyon.com/fr/datapusher/ws/rdata/jcd_jcdecaux.jcdvelov/all.json?maxfeatures=-1&start=1&filename=stations-velo-v-metropole-lyon-disponibilites-temps-reel"
     MARSEILLE = "https://data.ampmetropole.fr/api/explore/v2.1/catalog/datasets/gbfs-extract-station-information/exports/json?lang=fr&timezone=Europe%2FBerlin"
     NANTES = "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_stations-velos-libre-service-nantes-metropole-disponibilites/exports/json"
     PARIS = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/exports/json"

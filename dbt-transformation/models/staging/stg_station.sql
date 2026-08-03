@@ -136,3 +136,29 @@ FROM
     jsonb_array_elements(data) AS json
 WHERE
     nom = 'marseille.json'
+UNION
+ALL -- Lyon
+SELECT
+    '{{ var("LYON_CITY_CODE", "7") }}' || '-' || (json ->> 'number') AS id,
+    json ->> 'number' AS code,
+    json ->> 'name' AS name,
+    json ->> 'commune' AS city_name,
+    json ->> 'code_insee' AS city_code,
+    json ->> 'address' AS address,
+    (json ->> 'lng') :: DOUBLE PRECISION AS longitude,
+    (json ->> 'lat') :: DOUBLE PRECISION AS latitude,
+    CASE
+        WHEN json ->> 'status' = 'OPEN' THEN 'open'
+        WHEN json ->> 'status' = 'CLOSED' THEN 'closed'
+        ELSE 'unknown'
+    END AS status,
+    (json ->> 'bike_stands') :: INTEGER AS capacity,
+    (json ->> 'available_bike_stands') :: INTEGER AS bicycle_docks_available,
+    (json ->> 'available_bikes') :: INTEGER AS bicycle_available,
+    (json ->> 'last_update') :: TIMESTAMP AS last_statement_date,
+    current_date AS created_date
+FROM
+    {{ source('postgres', 'staging_raw') }},
+    jsonb_array_elements(data -> 'values') AS json
+WHERE
+    nom = 'lyon.json'
