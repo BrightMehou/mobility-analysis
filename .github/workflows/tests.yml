@@ -52,4 +52,4 @@ jobs:
         run: uv run src/init_db.py
 
       - name: Run dbt build
-        run: uv run dbt build
+        run: uv run dbt build --project-dir dbt-transformation --profiles-dir dbt-transformation
