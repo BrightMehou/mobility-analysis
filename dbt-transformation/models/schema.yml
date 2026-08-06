@@ -1,7 +1,6 @@
 version: 2
 
 models:
-
   - name: stg_city
     description: "Table de staging des villes avec leurs informations brutes."
   - name: stg_department
@@ -14,7 +13,7 @@ models:
   - name: city
     description: "Table des villes avec le nombre d’habitants."
     config:
-      contract: {enforced: true}
+      contract: { enforced: true }
     columns:
       - name: id
         description: "Identifiant unique de la ville."
@@ -38,7 +37,7 @@ models:
   - name: department
     description: "Table des départements avec leurs informations générales."
     config:
-      contract: {enforced: true}
+      contract: { enforced: true }
     columns:
       - name: id
         description: "Identifiant unique du département."
@@ -59,7 +58,7 @@ models:
   - name: region
     description: "Table des régions avec leurs informations générales."
     config:
-      contract: {enforced: true}
+      contract: { enforced: true }
     columns:
       - name: id
         description: "Identifiant unique de la région."
@@ -74,11 +73,11 @@ models:
         data_type: date
         constraints:
           - type: not_null
-          
+
   - name: station
     description: "Table des stations de vélos avec leurs informations générales et de disponibilité."
     config:
-      contract: {enforced: true}
+      contract: { enforced: true }
     columns:
       - name: id
         description: "Identifiant unique de la station."
@@ -86,7 +85,7 @@ models:
         constraints:
           - type: primary_key
       - name: code
-        description: "Code de la station."     
+        description: "Code de la station."
         data_type: text
         constraints:
           - type: not_null
@@ -119,7 +118,7 @@ models:
         data_tests:
           - accepted_values:
               arguments:
-                values: ['open', 'closed', 'unknown']
+                values: ["open", "closed", "unknown"]
       - name: capacity
         description: "Capacité en nombre de vélos."
         data_type: integer

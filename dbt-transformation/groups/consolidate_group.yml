@@ -5,5 +5,5 @@ groups:
       email: "data-team@entreprise.com"
     description: Les données des communes et des stations sont nettoyées, enrichies et structurées pour l’analyse.
     config:
-      meta: 
+      meta:
         data_owner: data team

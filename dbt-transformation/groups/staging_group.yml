@@ -5,5 +5,5 @@ groups:
       email: "data-team@entreprise.com"
     description: Ces tables éphémères permettent de transformer les données brutes (json) en données tabulaires prêtes à être utilisées dans les modèles en aval.
     config:
-      meta: 
+      meta:
         data_owner: data team

@@ -1,7 +1,6 @@
 version: 2
 
 exposures:
-
   - name: streamlit
     label: "Dashboard Streamlit"
     type: dashboard
@@ -26,5 +25,3 @@ exposures:
     owner:
       name: "Equipe Data"
       email: "data-team@entreprise.com"
-
-  

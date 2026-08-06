@@ -82,3 +82,14 @@ docker compose up -d --build
 ```bash
 docker compose down
 ```
+
+### Qualité de code (développeurs)
+
+```bash
+uv run pre-commit install
+uv run pre-commit run --all-files
+```
+
+## Licence
+
+Voir le fichier [LICENSE](LICENSE).

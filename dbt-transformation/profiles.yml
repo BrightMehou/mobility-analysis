@@ -1,12 +1,12 @@
-mobility_analysis:                           
+mobility_analysis:
   target: mobility_analysis
   outputs:
     mobility_analysis:
       type: postgres
-      host: "{{ env_var('DB_HOST', 'localhost') }}"  
-      user: "{{ env_var('DB_USER', 'postgres') }}"   
-      password: "{{ env_var('DB_PASSWORD', 'postgres') }}"  
-      port: "{{ env_var('DB_PORT', 5432) | int }}"         
-      dbname: "{{ env_var('DB_NAME', 'postgres') }}"      
-      schema: "{{ env_var('DB_SCHEMA', 'public') }}" 
+      host: "{{ env_var('DB_HOST', 'localhost') }}"
+      user: "{{ env_var('DB_USER', 'postgres') }}"
+      password: "{{ env_var('DB_PASSWORD', 'postgres') }}"
+      port: "{{ env_var('DB_PORT', 5432) | int }}"
+      dbname: "{{ env_var('DB_NAME', 'postgres') }}"
+      schema: "{{ env_var('DB_SCHEMA', 'public') }}"
       threads: 4

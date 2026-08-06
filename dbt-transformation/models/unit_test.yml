@@ -5,11 +5,11 @@ unit_tests:
     given:
       - input: source('postgres', 'staging_raw')
         rows:
-          - { 
-                NOM: 'communes.json', 
-                DATA: '[{"population": "100", "code": "code1", "nom": "nom1"}, {"population": "200", "code": "code2", "nom": "nom2"}]' 
+          - {
+              NOM: "communes.json",
+              DATA: '[{"population": "100", "code": "code1", "nom": "nom1"}, {"population": "200", "code": "code2", "nom": "nom2"}]',
             }
     expect:
       rows:
-        - { NB_INHABITANTS: 100, ID: "code1", NAME: "nom1"}
-        - { NB_INHABITANTS: 200, ID: "code2", NAME: "nom2"}
+        - { NB_INHABITANTS: 100, ID: "code1", NAME: "nom1" }
+        - { NB_INHABITANTS: 200, ID: "code2", NAME: "nom2" }

@@ -5,5 +5,5 @@ groups:
       email: "data-team@entreprise.com"
     description: Ces vues permettent d’explorer les métriques clés et les tendances du système de vélos en libre-service.
     config:
-      meta: 
+      meta:
         data_owner: data team
