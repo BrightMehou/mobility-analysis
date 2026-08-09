@@ -1,5 +1,4 @@
-"""
-Tableau de bord Streamlit pour l’analyse de mobilité urbaine 🚲.
+"""Tableau de bord Streamlit pour l'analyse de mobilité urbaine 🚲.
 
 Fonctionnalités principales :
 - Lancement du pipeline (ingestion + transformation) via un bouton.
@@ -13,7 +12,7 @@ import plotly.express as px
 import streamlit as st
 from plotly.graph_objects import Figure
 
-from db import create_database_client
+from db import DatabaseClient, create_database_client
 from pipeline import pipeline
 
 logging.basicConfig(
@@ -29,7 +28,7 @@ st.logo("🚲")
 
 
 @st.cache_resource(show_spinner=False)
-def get_db_client():
+def get_db_client() -> DatabaseClient:
     return create_database_client()
 
 
@@ -44,7 +43,7 @@ if st.button("🔄 Actualiser"):
             st.success("Execution du pipeline terminée avec succès !")
     except Exception as e:
         logger.exception("Erreur pipeline")
-        st.error(f"❌ Échec du pipeline : {e}")
+        st.error(f"Échec du pipeline : {e}")
 
 tab_global, tab_region, tab_department, tab_city, tab_station = st.tabs(
     [
@@ -53,7 +52,7 @@ tab_global, tab_region, tab_department, tab_city, tab_station = st.tabs(
         "🏛️ Département",
         "🏙️ City",
         "🗺️ Station",
-    ]
+    ],
 )
 
 
@@ -68,7 +67,7 @@ with tab_global:
         display_cols = df_global_metrics.columns.tolist()
         cols_layout = st.columns(len(display_cols))
         first_row = df_global_metrics.iloc[0]
-        for col_name, col_place in zip(display_cols, cols_layout):
+        for col_name, col_place in zip(display_cols, cols_layout, strict=True):
             val = first_row[col_name]
             col_place.metric(col_name.replace("_", " ").title(), f"{val}", border=True)
 
@@ -111,7 +110,7 @@ with tab_city:
         if df.empty:
             st.warning("Aucune donnée disponible pour cette vue.")
         st.dataframe(df, width="stretch")
-        logger.info(f"Données pour '{title}' chargées.")
+        logger.info("Données pour '%s' chargées.", title)
 
 with tab_department:
     st.subheader("🏛️ Indicateurs par département")
@@ -136,7 +135,7 @@ with tab_department:
         if df.empty:
             st.warning("Aucune donnée disponible pour cette vue.")
         st.dataframe(df, width="stretch")
-        logger.info(f"Données pour '{title}' chargées.")
+        logger.info("Données pour '%s' chargées.", title)
 
 with tab_region:
     st.subheader("🗺️ Indicateurs par région")
@@ -161,7 +160,7 @@ with tab_region:
         if df.empty:
             st.warning("Aucune donnée disponible pour cette vue.")
         st.dataframe(df, width="stretch")
-        logger.info(f"Données pour '{title}' chargées.")
+        logger.info("Données pour '%s' chargées.", title)
 
 with tab_station:
     st.subheader("🗺️ Carte interactive des stations")
@@ -189,7 +188,7 @@ with tab_station:
             ],
             color="bicycle_available",
             color_continuous_scale=px.colors.sequential.Plasma,
-            center=dict(lat=48.8566, lon=2.3522),  # Paris
+            center={"lat": 48.8566, "lon": 2.3522},  # Paris
             size_max=15,
             height=600,
             zoom=11,

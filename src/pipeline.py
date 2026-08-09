@@ -1,5 +1,4 @@
-"""
-Script d'ingestion des données en temps réel pour l'analyse de mobilité.
+"""Script d'ingestion des données en temps réel pour l'analyse de mobilité.
 
 Fonctionnalités principales :
 - Récupération des données vélo en temps réel des stations de vélo.
@@ -41,22 +40,22 @@ def fetch_and_store_data(url: str, label: str, db: DatabaseClient) -> None:
         response.raise_for_status()
         if response.text.strip():
             data_to_store = response.text
-            logger.info(f"✅ Données {label} récupérées avec succès")
+            logger.info("Données %s récupérées avec succès", label)
         else:
-            logger.warning(f"⚠️ {label} a renvoyé un contenu vide")
+            logger.warning("⚠️ %s a renvoyé un contenu vide", label)
     except requests.exceptions.RequestException as e:
-        logger.error(f"❌ Erreur réseau ou HTTP pour {label}: {e}")
+        logger.error("Erreur réseau ou HTTP pour %s: %s", label, e)
     except Exception as e:
-        logger.error(f"❌ Erreur imprévue pour {label}: {e}")
+        logger.error("Erreur imprévue pour %s: %s", label, e)
     finally:
         db.store_json(f"{label}.json", data_to_store)
         if data_to_store == "[]":
-            logger.warning(f"ℹ️ Fichier vide créé pour {label}")
+            logger.warning("Fichier vide créé pour %s", label)
 
 
 def pipeline(db: DatabaseClient) -> None:
-    """
-    Récupère les données en temps réel des stations de vélo et des communes françaises.
+    """Exécute le pipeline d'ingestion et transformation des données.
+
     Si une source échoue, crée un fichier JSON vide ([]) pour éviter un crash dbt.
     Exécute la commande `dbt run`.
     """
@@ -64,7 +63,7 @@ def pipeline(db: DatabaseClient) -> None:
         label = url.name.lower()
         fetch_and_store_data(url, label, db)
 
-    logger.info("🚀 Démarrage de la commande dbt run")
+    logger.info("Démarrage de la commande dbt run")
 
     dbt = dbtRunner()
     cli_args = [

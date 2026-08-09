@@ -2,7 +2,8 @@
 
 import logging
 import os
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 import pandas as pd
 from sqlalchemy import URL, Engine, create_engine, text

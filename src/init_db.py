@@ -1,5 +1,4 @@
-"""
-Script d'initialisation des tables de base pour l'analyse de mobilité.
+"""Script d'initialisation des tables de base pour l'analyse de mobilité.
 
 Fonctionnalités principales
 - Création des tables de staging dans PostgreSQL.
