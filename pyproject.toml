@@ -3,15 +3,15 @@ name = "mobility-analysis"
 version = "0.9.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "dbt-core>=1.11.0,<2.0.0", 
     "dbt-postgres>=1.10.0",
     "pandas>=3.0.0",
-    "plotly>=6.3.0",
+    "plotly>=7.0.0",
     "requests>=2.34.0",
     "sqlalchemy>=2.0.46",
-    "streamlit>=1.58.0",
+    "streamlit>=1.65.0",
 ]
 
 [dependency-groups]
@@ -19,7 +19,7 @@ dev = [
     "pre-commit>=4.5.1",
     "pytest>=9.1.1",
     "pytest-mock>=3.15.1",
-    "ruff>=0.13.0",
+    "ruff>=0.16.0",
 ]
 
 [tool.ruff.lint]

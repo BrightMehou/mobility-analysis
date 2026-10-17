@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout du code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Construction et démarrage des services avec Docker Compose
         run: docker compose up -d --build
